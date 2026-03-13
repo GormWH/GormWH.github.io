@@ -5,5 +5,4 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
     site: 'https://gormwh.github.io',
     base: '/',
-    trailingSlash: 'always',
 });
