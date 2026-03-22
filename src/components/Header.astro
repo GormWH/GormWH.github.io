@@ -1,7 +1,13 @@
 ---
-import Navigation from "@components/Navigation.astro";
 ---
 
-<header>
-    <Navigation />
+<header class="sticky top-0 z-50 backdrop-blur-lg shadow-lg">
+    <nav class="p-5 justify-center">
+        <ul class="flex gap-4">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
 </header>
