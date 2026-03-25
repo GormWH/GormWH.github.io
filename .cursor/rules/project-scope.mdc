@@ -1,0 +1,16 @@
+---
+description: Read AGENTS.md before making project changes
+alwaysApply: true
+---
+
+# Project Scope
+
+Before making changes, read `AGENTS.md` at the repository root.
+
+Use it as the system-of-record for:
+- project goals and constraints
+- architecture boundaries
+- documentation map
+- reusable skills in `.agents/skills/`
+
+For recurring workflows (adding a page, adding a project entry, updating profile copy), prefer the matching skill in `.agents/skills/` before inventing a new process.
