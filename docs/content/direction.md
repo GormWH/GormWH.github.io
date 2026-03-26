@@ -21,7 +21,7 @@ Present SuHong Park as a systems-focused software engineer with strong architect
 ## Near-term priorities
 
 - Improve depth and specificity of project writeups.
-- Fill placeholder pages (`/skills`, `/thinking`) with high-signal content.
+- Fill placeholder page (`/skills`) with high-signal content.
 - Keep About and Contact pages aligned with current role focus.
 
 ## Constraints

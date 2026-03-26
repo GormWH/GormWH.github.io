@@ -1,0 +1,73 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { render, type CollectionEntry } from "astro:content";
+import { useTranslations, getLocalizedPath } from "@i18n/utils";
+import type { Lang } from "@i18n/translations";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props;
+const lang = (Astro.currentLocale ?? "en") as Lang;
+const t = useTranslations(lang);
+const { Content, headings } = await render(project);
+
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 6);
+const hasToc = tocHeadings.length > 0;
+const projectsListHref = getLocalizedPath("/projects", lang);
+---
+
+<BaseLayout pageTitle={project.data.title}>
+    <div class:list={["project-doc", hasToc && "project-doc--with-toc"]}>
+        <a class="project-doc__back" href={projectsListHref}>
+            <span class="project-doc__back-icon" aria-hidden="true">←</span>
+            {t("project.backToList")}
+        </a>
+
+        {
+            hasToc && (
+                <aside class="project-doc__toc" aria-label={t("project.tocHeading")}>
+                    <div class="project-doc__toc-inner">
+                        <nav aria-labelledby="project-toc-heading">
+                            <p
+                                id="project-toc-heading"
+                                class="project-doc__toc-title"
+                            >
+                                {t("project.tocHeading")}
+                            </p>
+                            <ul class="project-doc__toc-list">
+                                {tocHeadings.map((h) => (
+                                    <li class="project-doc__toc-item">
+                                        <a
+                                            class:list={[
+                                                "project-doc__toc-link",
+                                                h.depth >= 3 &&
+                                                    `project-doc__toc-link--depth-${h.depth}`,
+                                            ]}
+                                            href={`#${h.slug}`}
+                                        >
+                                            {h.text}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
+                    </div>
+                </aside>
+            )
+        }
+
+        <article class="project-doc__article">
+            <header>
+                <h1>{project.data.title}</h1>
+                <p class="project-doc__meta">
+                    <time datetime={project.data.pubDate.toISOString()}>
+                        {project.data.pubDate.toLocaleDateString()}
+                    </time>
+                </p>
+            </header>
+            <Content />
+        </article>
+    </div>
+</BaseLayout>

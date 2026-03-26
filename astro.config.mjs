@@ -8,6 +8,15 @@ export default defineConfig({
   site: 'https://gormwh.github.io',
   base: '/',
 
+  i18n: {
+    locales: ['en', 'ja', 'ko'],
+    defaultLocale: 'en',
+    routing: {
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: false,
+    },
+  },
+
   vite: {
     plugins: [tailwindcss()],
   },

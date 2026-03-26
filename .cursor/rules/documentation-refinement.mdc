@@ -1,0 +1,28 @@
+---
+description: Refine documentation when implementation or execution reveals gaps
+alwaysApply: true
+---
+
+# Documentation Refinement
+
+Keep documentation aligned with real behavior during the same task when possible.
+
+## Update Triggers
+
+- Implementation changes behavior, architecture, workflow, commands, or expected outputs.
+- Build/runtime/test errors expose stale, incorrect, or missing documentation.
+- Actual successful process differs from documented steps (mis-implementation risk).
+
+## Required Documentation Targets
+
+- Update `AGENTS.md` when project map, constraints, commands, or workflow references change.
+- Update related files in `docs/` when specs, decisions, guides, operations, or plans are affected.
+- Update procedures in `.agents/skills/` when task instructions are incorrect, incomplete, or outdated.
+- Update conflicting guidance in `.cursor/rules/` when rules cause repeated mistakes or ambiguity.
+
+## Completion Checklist
+
+- Confirm touched behavior has matching documentation.
+- Correct source-of-truth docs instead of adding temporary notes.
+- Keep edits minimal, specific, and consistent with existing structure.
+- Do not finish until relevant documentation updates are complete or explicitly deferred with reason.

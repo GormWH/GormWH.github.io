@@ -52,7 +52,7 @@ Make sure the page helps one of these portfolio goals:
 Run:
 
 ```sh
-npm run build
+pnpm run build
 ```
 
 Confirm build succeeds and the new route is generated.

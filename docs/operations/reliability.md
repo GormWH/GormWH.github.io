@@ -24,8 +24,8 @@ Workflow file: `.github/workflows/deploy.yml`
 - Build failure: fix and push again.
 - Content schema error: update the failing markdown frontmatter/body.
 - Full local reproduction:
-  - `npm install`
-  - `npm run build`
+  - `pnpm install`
+  - `pnpm run build`
 
 ## Runtime dependencies
 

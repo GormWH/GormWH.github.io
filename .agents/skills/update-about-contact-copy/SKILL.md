@@ -55,7 +55,7 @@ If major narrative strategy changed, update:
 Run:
 
 ```sh
-npm run build
+pnpm run build
 ```
 
 Then quickly read both pages side by side for consistency.

@@ -1,6 +1,269 @@
 @import "tailwindcss";
 
-h1 {
-    font-size: 2rem;
-    font-weight: bold;
+@theme {
+    /* Neutrals - light gray / white foundation */
+    --color-page: #f6f6f7;
+    --color-surface: #ffffff;
+    --color-ink: #18181b;
+    --color-muted: #71717a;
+    --color-subtle: #a1a1aa;
+    --color-border: #e4e4e7;
+    --color-border-strong: #d4d4d8;
+
+    /* Primary - indigo */
+    --color-primary: #4f46e5;
+    --color-primary-hover: #4338ca;
+    --color-primary-soft: #eef2ff;
+    --color-primary-fg: #312e81;
+
+    /* Secondary - muted emerald */
+    --color-accent: #0f766e;
+    --color-accent-hover: #115e59;
+    --color-accent-soft: #ccfbf1;
+    --color-accent-fg: #134e4a;
+
+    /* Typography */
+    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+
+    --text-base: 1.0625rem;
+    --text-base--line-height: 1.7;
+    --text-lg--line-height: 1.65;
+    --text-xl--line-height: 1.45;
+    --text-2xl--line-height: 1.35;
+    --text-3xl--line-height: 1.25;
+    --text-4xl--line-height: 1.15;
+
+    --tracking-tightish: -0.015em;
+}
+
+@layer base {
+    html {
+        color-scheme: light;
+    }
+
+    body {
+        @apply bg-page font-sans text-ink antialiased;
+        font-size: var(--text-base);
+        line-height: var(--text-base--line-height);
+    }
+
+    a:focus-visible {
+        @apply rounded-sm outline-2 outline-offset-2 outline-primary;
+    }
+
+    strong {
+        @apply font-semibold text-ink;
+    }
+
+    small {
+        @apply text-sm text-muted;
+    }
+
+    hr {
+        @apply my-10 border-0 border-t border-border;
+    }
+
+}
+
+@layer components {
+    .project-doc {
+        @apply w-full;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+        .project-doc--with-toc {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 12rem;
+            grid-template-areas:
+                "back back"
+                "article toc";
+            column-gap: 2rem;
+            align-items: start;
+        }
+
+        .project-doc--with-toc .project-doc__back {
+            grid-area: back;
+        }
+
+        .project-doc--with-toc .project-doc__article {
+            grid-area: article;
+        }
+
+        .project-doc--with-toc .project-doc__toc {
+            grid-area: toc;
+        }
+    }
+
+    .project-doc__back {
+        @apply inline-flex w-fit max-w-full items-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-ink no-underline shadow-sm transition-colors;
+    }
+
+    .project-doc__back:hover {
+        @apply border-border-strong bg-page text-ink;
+    }
+
+    .project-doc__back:focus-visible {
+        @apply rounded-lg outline-2 outline-offset-2 outline-primary;
+    }
+
+    .project-doc__back-icon {
+        @apply text-muted;
+    }
+
+    .project-doc__toc {
+        @apply min-w-0;
+    }
+
+    .project-doc__toc-inner {
+        @apply rounded-lg border border-border/80 bg-surface/80 px-3 py-3;
+    }
+
+    @media (min-width: 1024px) {
+        .project-doc__toc-inner {
+            @apply sticky top-24 border-l border-l-border border-t-0 border-r-0 border-b-0 bg-transparent py-0 pl-4 shadow-none;
+        }
+    }
+
+    .project-doc__toc-title {
+        @apply mb-2 text-xs font-semibold uppercase tracking-wide text-subtle;
+    }
+
+    .project-doc__toc-list {
+        @apply m-0 list-none p-0;
+    }
+
+    .project-doc__toc-item {
+        @apply my-1.5 first:mt-0 last:mb-0;
+    }
+
+    .project-doc__toc-link {
+        @apply block text-sm leading-snug text-muted no-underline transition-colors hover:text-ink;
+    }
+
+    .project-doc__toc-link:focus-visible {
+        @apply rounded-sm outline-2 outline-offset-2 outline-primary;
+    }
+
+    .project-doc__toc-link--depth-3 {
+        padding-left: 0.65rem;
+    }
+
+    .project-doc__toc-link--depth-4 {
+        padding-left: 1.15rem;
+    }
+
+    .project-doc__toc-link--depth-5 {
+        padding-left: 1.65rem;
+    }
+
+    .project-doc__toc-link--depth-6 {
+        padding-left: 2.15rem;
+    }
+
+    .project-doc__article {
+        @apply min-w-0;
+    }
+
+    .project-doc__article :is(h1, h2, h3, h4) {
+        @apply font-display font-semibold text-ink tracking-tightish text-balance;
+    }
+
+    .project-doc__article h1 {
+        @apply text-4xl;
+        margin-block: 0 0.65em;
+    }
+
+    .project-doc__article h2 {
+        @apply text-3xl;
+        margin-block: 1.75em 0.5em;
+    }
+
+    .project-doc__article h3 {
+        @apply text-2xl;
+        margin-block: 1.5em 0.45em;
+    }
+
+    .project-doc__article h4 {
+        @apply text-xl;
+        margin-block: 1.35em 0.4em;
+    }
+
+    .project-doc__article p {
+        margin-block: 0 1em;
+    }
+
+    .project-doc__article p:last-child {
+        margin-bottom: 0;
+    }
+
+    .project-doc__article a {
+        @apply text-primary underline decoration-primary/35 underline-offset-[0.2em] transition-colors;
+    }
+
+    .project-doc__article a:hover {
+        @apply text-primary-hover decoration-primary-hover/50;
+    }
+
+    .project-doc__article ul,
+    .project-doc__article ol {
+        @apply my-4 pl-6 text-ink;
+    }
+
+    .project-doc__article ul {
+        list-style-type: disc;
+    }
+
+    .project-doc__article ol {
+        list-style-type: decimal;
+    }
+
+    .project-doc__article li {
+        margin-block: 0.35em;
+    }
+
+    .project-doc__article blockquote {
+        @apply my-6 border-l-2 border-accent/40 pl-4 text-muted italic;
+    }
+
+    .project-doc__article code {
+        @apply rounded bg-border/60 px-1 py-0.5 font-mono text-[0.9em] text-ink;
+    }
+
+    .project-doc__article pre {
+        @apply my-6 overflow-x-auto rounded-lg border border-border bg-surface p-4 text-sm shadow-sm;
+    }
+
+    .project-doc__article pre code {
+        @apply bg-transparent p-0;
+    }
+
+    .project-doc__article aside {
+        @apply my-6 rounded-lg border border-border bg-surface px-4 py-3 text-sm text-muted shadow-sm;
+    }
+
+    .project-doc__article figure {
+        @apply my-8;
+    }
+
+    .project-doc__article figcaption {
+        @apply mt-2 text-center text-sm text-muted;
+    }
+
+    .project-doc__article :is(h2, h3, h4, h5, h6) {
+        scroll-margin-top: 5.5rem;
+    }
+
+    .project-doc__article > header > h1 {
+        margin-top: 0;
+    }
+
+    .project-doc__meta {
+        @apply mt-1 text-sm text-muted;
+    }
 }

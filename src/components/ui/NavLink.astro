@@ -1,0 +1,37 @@
+---
+interface Props {
+    href: string;
+    active?: boolean;
+    variant?: "primary" | "locale";
+    className?: string;
+}
+
+const {
+    href,
+    active = false,
+    variant = "primary",
+    className,
+    ...rest
+} = Astro.props as Props & Record<string, string | boolean | undefined>;
+
+const baseClasses =
+    "block rounded-md no-underline decoration-transparent transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
+const variantClasses =
+    variant === "locale"
+        ? "px-2 py-1.5 text-xs font-medium uppercase tracking-wide text-muted hover:bg-border/40 hover:text-ink"
+        : "px-2.5 py-1.5 text-sm";
+const stateClasses =
+    variant === "primary"
+        ? active
+            ? "bg-border/50 text-ink"
+            : "text-muted hover:bg-border/40 hover:text-ink"
+        : "";
+---
+
+<a
+    {...rest}
+    class:list={[baseClasses, variantClasses, stateClasses, className]}
+    href={href}
+>
+    <slot />
+</a>

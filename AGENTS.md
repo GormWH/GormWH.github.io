@@ -31,7 +31,7 @@
 
 | Path | Purpose |
 |------|---------|
-| `src/pages/` | Portfolio routes (`/`, `/about`, `/projects`, `/skills`, `/thinking`, `/contact`) |
+| `src/pages/` | Portfolio routes (`/`, `/about`, `/projects`, `/skills`, `/contact`) |
 | `src/layouts/` | Shared page layout shell |
 | `src/components/` | Shared components |
 | `projects/` | Project markdown entries used by the content collection |
@@ -71,8 +71,8 @@
 ## Commands
 
 ```sh
-npm install
-npm run dev
-npm run build
-npm run preview
+pnpm install
+pnpm run dev
+pnpm run build
+pnpm run preview
 ```

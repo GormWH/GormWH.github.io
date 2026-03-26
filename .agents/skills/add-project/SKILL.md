@@ -69,7 +69,7 @@ The project should appear automatically in:
 Run:
 
 ```sh
-npm run build
+pnpm run build
 ```
 
 Fix any schema or content rendering errors before finishing.
