@@ -1,0 +1,27 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ProjectsPost from "@components/pages/projects/ProjectsPost.astro";
+import PageSection from "@components/ui/PageSection.astro";
+import { getCollection } from "astro:content";
+import { useTranslations, getLocalizedPath } from "@i18n/utils";
+import type { Lang } from "@i18n/translations";
+
+const lang = (Astro.currentLocale ?? "en") as Lang;
+const t = useTranslations(lang);
+const allProjects = await getCollection("projects");
+---
+
+<BaseLayout pageTitle={t("page.projects")}>
+    <PageSection title={t("page.projects")} contentClassName="space-y-6">
+        <ul class="m-0 list-none space-y-3 p-0">
+            {
+                allProjects.map((project) => (
+                    <ProjectsPost
+                        title={project.data.title}
+                        url={getLocalizedPath(`/projects/${project.id}`, lang)}
+                    />
+                ))
+            }
+        </ul>
+    </PageSection>
+</BaseLayout>

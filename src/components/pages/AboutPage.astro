@@ -1,0 +1,24 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageSection from "@components/ui/PageSection.astro";
+import TextLink from "@components/ui/TextLink.astro";
+import { useTranslations, getLocalizedPath } from "@i18n/utils";
+import type { Lang } from "@i18n/translations";
+
+const lang = (Astro.currentLocale ?? "en") as Lang;
+const t = useTranslations(lang);
+const projectsHref = getLocalizedPath("/projects", lang);
+---
+
+<BaseLayout pageTitle={t("page.about")}>
+    <PageSection id="about" title={t("about.sectionTitle")}>
+        <p>{t("about.p1")}</p>
+        <p>{t("about.p2")}</p>
+        <p>{t("about.p3")}</p>
+        <p>
+            {t("about.p4Lead")}{" "}
+            <TextLink href={projectsHref}>{t("about.p4LinkText")}</TextLink>{" "}
+            {t("about.p4Tail")}
+        </p>
+    </PageSection>
+</BaseLayout>

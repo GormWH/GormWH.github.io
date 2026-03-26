@@ -1,0 +1,13 @@
+---
+import TextLink from "@components/ui/TextLink.astro";
+const { title, url } = Astro.props;
+---
+
+<li>
+    <TextLink
+        href={url}
+        className="block rounded-lg border border-border bg-surface px-4 py-3 no-underline transition-colors hover:border-border-strong hover:bg-page hover:text-primary-hover"
+    >
+        {title}
+    </TextLink>
+</li>

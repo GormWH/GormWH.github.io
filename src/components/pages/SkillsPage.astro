@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageSection from "@components/ui/PageSection.astro";
+import { useTranslations } from "@i18n/utils";
+import type { Lang } from "@i18n/translations";
+
+const lang = (Astro.currentLocale ?? "en") as Lang;
+const t = useTranslations(lang);
+---
+
+<BaseLayout pageTitle={t("page.skills")}>
+    <PageSection id="skills" title={t("skills.sectionTitle")}>
+        <p>{t("skills.body")}</p>
+    </PageSection>
+</BaseLayout>

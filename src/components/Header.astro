@@ -1,12 +1,169 @@
 ---
+import {
+    useTranslations,
+    getLocalizedPath,
+    stripLocalePrefix,
+    getOtherLocales,
+} from "@i18n/utils";
+import { languages, type Lang } from "@i18n/translations";
+import Container from "@components/ui/Container.astro";
+import NavLink from "@components/ui/NavLink.astro";
+
+const lang = (Astro.currentLocale ?? "en") as Lang;
+const t = useTranslations(lang);
+const tNav = useTranslations("en");
+const currentPath = Astro.url.pathname;
+const pathWithoutLocale = stripLocalePrefix(currentPath);
+
+const navLinks = [
+    { path: "/", label: tNav("nav.home") },
+    { path: "/about", label: tNav("nav.about") },
+    { path: "/projects", label: tNav("nav.projects") },
+    { path: "/contact", label: tNav("nav.contact") },
+].map((item) => ({
+    href: getLocalizedPath(item.path, lang),
+    label: item.label,
+}));
+
+function trimTrailingSlash(p: string): string {
+    if (p.length > 1 && p.endsWith("/")) return p.slice(0, -1);
+    return p;
+}
+
+function linkIsActive(href: string, path: string): boolean {
+    const pathN = trimTrailingSlash(path);
+    const hrefN = trimTrailingSlash(href);
+    if (pathN === hrefN) return true;
+    const homeHref = trimTrailingSlash(getLocalizedPath("/", lang));
+    if (hrefN === homeHref) return false;
+    return pathN.startsWith(`${hrefN}/`);
+}
+
+const otherLocales = getOtherLocales(lang);
 ---
 
-<header>
-    <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
-        </ul>
-    </nav>
+<header
+    class="sticky top-0 z-50 w-full pt-3 pb-2 sm:pt-4"
+    aria-label={t("header.siteAria")}
+>
+    <Container className="relative flex items-start justify-center">
+        <nav
+            class="inline-flex max-w-full justify-center rounded-2xl border border-border/70 bg-surface/70 px-2 py-1.5 shadow-sm backdrop-blur-md supports-backdrop-filter:bg-surface/55 sm:px-3 sm:py-2"
+            aria-label={t("header.primaryNavAria")}
+        >
+            <ul
+                class="flex max-w-full flex-wrap items-center justify-center gap-x-0.5 gap-y-0.5 sm:gap-x-1"
+            >
+                {
+                    navLinks.map((link) => (
+                        <li>
+                            <NavLink
+                                href={link.href}
+                                active={linkIsActive(link.href, currentPath)}
+                            >
+                                {link.label}
+                            </NavLink>
+                        </li>
+                    ))
+                }
+            </ul>
+        </nav>
+
+        <div class="absolute top-0 right-0">
+            <div class="relative" data-lang-menu>
+                <button
+                    type="button"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border/80 bg-surface/80 text-muted shadow-sm transition-colors hover:bg-border/40 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                    aria-label={t("header.changeLanguageAria")}
+                    aria-expanded="false"
+                    aria-controls="language-menu-list"
+                    data-lang-menu-button
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        class="h-4.5 w-4.5"
+                        aria-hidden="true"
+                    >
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M3 12h18"></path>
+                        <path d="M12 3a15 15 0 0 1 0 18"></path>
+                        <path d="M12 3a15 15 0 0 0 0 18"></path>
+                    </svg>
+                </button>
+
+                <ul
+                    id="language-menu-list"
+                    class="absolute top-11 right-0 hidden min-w-36 rounded-lg border border-border bg-surface p-1.5 shadow-md"
+                    data-lang-menu-list
+                >
+                    <li>
+                        <span class="mb-1 block px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-subtle">
+                            {t("header.languageMenuHeading")}
+                        </span>
+                    </li>
+                    {
+                        ([lang, ...otherLocales] as Lang[]).map((loc) => (
+                            <li>
+                                <a
+                                    href={getLocalizedPath(pathWithoutLocale, loc)}
+                                    hreflang={loc}
+                                    lang={loc}
+                                    class:list={[
+                                        "flex items-center justify-between gap-3 rounded-md px-2.5 py-1.5 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                                        loc === lang
+                                            ? "bg-border/50 text-ink"
+                                            : "text-muted hover:bg-border/40 hover:text-ink",
+                                    ]}
+                                >
+                                    {languages[loc]}
+                                    <span class={loc === lang ? "text-ink" : "invisible"} aria-hidden="true">✓</span>
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+        </div>
+    </Container>
 </header>
+
+<script>
+    const langMenu = document.querySelector("[data-lang-menu]");
+    if (langMenu) {
+        const button = langMenu.querySelector("[data-lang-menu-button]");
+        const list = langMenu.querySelector("[data-lang-menu-list]");
+
+        if (button instanceof HTMLButtonElement && list instanceof HTMLElement) {
+            const closeMenu = () => {
+                list.classList.add("hidden");
+                button.setAttribute("aria-expanded", "false");
+            };
+
+            const openMenu = () => {
+                list.classList.remove("hidden");
+                button.setAttribute("aria-expanded", "true");
+            };
+
+            button.addEventListener("click", (event) => {
+                event.stopPropagation();
+                if (list.classList.contains("hidden")) {
+                    openMenu();
+                } else {
+                    closeMenu();
+                }
+            });
+
+            document.addEventListener("click", (event) => {
+                if (!langMenu.contains(event.target as Node)) closeMenu();
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") closeMenu();
+            });
+        }
+    }
+</script>

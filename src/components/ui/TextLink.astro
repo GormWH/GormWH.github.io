@@ -1,0 +1,31 @@
+---
+interface Props {
+    href: string;
+    variant?: "default" | "muted" | "subtle";
+    external?: boolean;
+    className?: string;
+}
+
+const {
+    href,
+    variant = "default",
+    external = false,
+    className,
+} = Astro.props as Props;
+
+const variantClasses =
+    variant === "muted"
+        ? "text-muted underline decoration-border underline-offset-[0.2em] transition-colors hover:text-ink hover:decoration-primary/40"
+        : variant === "subtle"
+          ? "text-subtle underline decoration-border/80 underline-offset-[0.2em] transition-colors hover:text-muted hover:decoration-primary/35"
+          : "text-primary underline decoration-primary/35 underline-offset-[0.2em] transition-colors hover:text-primary-hover hover:decoration-primary-hover/50";
+---
+
+<a
+    class:list={[variantClasses, className]}
+    href={href}
+    rel={external ? "noopener noreferrer" : undefined}
+    target={external ? "_blank" : undefined}
+>
+    <slot />
+</a>

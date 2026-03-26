@@ -1,0 +1,38 @@
+---
+interface Props {
+    id?: string;
+    title?: string;
+    titleTag?: "h1" | "h2" | "h3";
+    className?: string;
+    contentClassName?: string;
+}
+
+const {
+    id,
+    title,
+    titleTag = "h1",
+    className,
+    contentClassName,
+} = Astro.props as Props;
+const TitleTag = titleTag;
+---
+
+<article id={id} class:list={["space-y-5", className]}>
+    {
+        title && (
+            <header>
+                <TitleTag class="font-display text-3xl font-semibold tracking-tightish text-ink sm:text-4xl">
+                    {title}
+                </TitleTag>
+            </header>
+        )
+    }
+    <div
+        class:list={[
+            "space-y-4 text-ink [&>p]:m-0 [&>ul]:m-0 [&>ol]:m-0",
+            contentClassName,
+        ]}
+    >
+        <slot />
+    </div>
+</article>
