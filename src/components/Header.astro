@@ -1,0 +1,26 @@
+---
+const baseUrl = Astro.url.origin;
+const navItems = [
+  { label: "About", href: `${baseUrl}/about` },
+  { label: "Work", href: `${baseUrl}/work` },
+  { label: "Writing", href: `${baseUrl}/blog` },
+  { label: "Contact", href: `${baseUrl}/contact` },
+];
+---
+
+<header>
+  <nav>
+    {
+      navItems.map((item) => {
+        return (
+          <a
+            href={item.href}
+            aria-current={item.href === Astro.url.pathname ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        );
+      })
+    }
+  </nav>
+</header>
