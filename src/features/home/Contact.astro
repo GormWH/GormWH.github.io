@@ -1,5 +1,71 @@
 ---
+const CONTACTS = [
+  {
+    label: "Email",
+    text: "hello@gorm.dev",
+    href: "mailto:hello@gorm.dev",
+    external: false,
+  },
+  {
+    label: "GitHub",
+    text: "github.com/gorm",
+    href: "#",
+    external: true,
+  },
+  {
+    label: "Resume",
+    text: "view CV",
+    href: "#",
+    external: false,
+  },
+];
 ---
-<section id="home-contact">
-    <h1>Contact</h1>
+
+<section id="home-contact" class="gh-section mx-auto max-w-page px-6 sm:px-8">
+  <header class="gh-section-head">
+    <div>
+      <p class="gh-section-label">04 — Contact</p>
+      <h2 class="gh-section-title">
+        If it's worth doing,<br />I'd like to hear about it.
+      </h2>
+    </div>
+  </header>
+
+  <div class="hp-contact-grid">
+    {
+      CONTACTS.map((c) => (
+        <div>
+          <p class="gh-meta hp-contact-cell-label">{c.label}</p>
+          <a
+            class="gh-arrow"
+            href={c.href}
+            target={c.external ? "_blank" : undefined}
+            rel={c.external ? "noopener noreferrer" : undefined}
+          >
+            <span class="gh-arrow-text">{c.text}</span>
+            <span class="glyph" aria-hidden="true">→</span>
+          </a>
+        </div>
+      ))
+    }
+  </div>
 </section>
+
+<style>
+  .hp-contact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .hp-contact-cell-label {
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 760px) {
+    .hp-contact-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+</style>
