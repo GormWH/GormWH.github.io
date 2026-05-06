@@ -1,5 +1,197 @@
 ---
+const WORK = [
+  {
+    year: "2024",
+    org: "Bitset",
+    title: "Agent that respects your machine",
+    desc: "A local-first AI tool with sandboxed permissions. Designed for engineers who don't want their CLI hijacked.",
+    tags: ["Python", "Local-first", "CLI"],
+  },
+  {
+    year: "2023",
+    org: "Personal",
+    title: "CAD-to-text pipeline",
+    desc: "Take a Fusion 360 part, get a structured spec sheet a model can reason about. Ships in our shop floor toolkit.",
+    tags: ["Mech.", "LLM", "Fusion 360"],
+  },
+  {
+    year: "2020",
+    org: "ROK Army",
+    title: "Field comms automation",
+    desc: "Reduced a 40-minute radio check ritual to 6 minutes by writing the handbook the unit didn't have.",
+    tags: ["Process", "Writing"],
+  },
+  {
+    year: "2023",
+    org: "U-Tokyo",
+    title: "Master's thesis — adaptive control",
+    desc: "Closed-loop control under sensor degradation. Defended in March 2023.",
+    tags: ["Research", "Control"],
+  },
+];
 ---
-<section id="home-work">
-    <h1>Work</h1>
+
+<section id="home-work" class="hp-section mx-auto max-w-page px-6 sm:px-8">
+  <header class="hp-section-head">
+    <div>
+      <p class="hp-section-label">02 — Work</p>
+      <h2 class="hp-section-title">Recent work</h2>
+    </div>
+    <a class="hp-arrow" href="#">
+      <span class="hp-arrow-text">all projects</span>
+      <span class="glyph" aria-hidden="true">→</span>
+    </a>
+  </header>
+
+  <div class="hp-work-grid">
+    {
+      WORK.map((p) => (
+        <a class="hp-work-card" href="#">
+          <p class="gh-meta hp-work-meta">{p.year} · {p.org}</p>
+          <h3 class="hp-work-title">{p.title}</h3>
+          <p class="hp-work-desc">{p.desc}</p>
+          <div class="hp-work-tags">
+            {p.tags.map((t) => (
+              <span class="hp-tag">{t}</span>
+            ))}
+          </div>
+        </a>
+      ))
+    }
+  </div>
 </section>
+
+<style>
+  .hp-section {
+    padding-block: 96px;
+  }
+
+  .hp-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .hp-section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: var(--tracking-meta);
+    text-transform: uppercase;
+    color: var(--color-ink-2);
+    margin: 0;
+  }
+
+  .hp-section-title {
+    font-family: var(--font-headline);
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.005em;
+    font-weight: 500;
+    color: var(--color-ink-1);
+    margin: 18px 0 0;
+  }
+
+  .hp-arrow {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--color-ink-1);
+  }
+
+  .hp-arrow-text {
+    text-decoration: underline transparent;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color var(--duration-fast) var(--ease-mech);
+  }
+
+  .hp-arrow:hover .hp-arrow-text {
+    text-decoration-color: var(--color-ink-1);
+  }
+
+  .glyph {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--color-ink-2);
+  }
+
+  .hp-work-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--color-rule);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-2);
+    overflow: hidden;
+  }
+
+  .hp-work-card {
+    display: block;
+    padding: 28px 30px;
+    background: var(--color-bg);
+    transition: background var(--duration-fast) var(--ease-mech);
+  }
+
+  .hp-work-card:hover {
+    background: var(--color-bg-2);
+  }
+
+  .hp-work-meta {
+    margin-bottom: 14px;
+  }
+
+  .hp-work-title {
+    font-family: var(--font-headline);
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: 0.005em;
+    font-weight: 500;
+    color: var(--color-ink-1);
+    margin: 0 0 10px;
+    text-decoration: underline transparent;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+    transition: text-decoration-color var(--duration-fast) var(--ease-mech);
+  }
+
+  .hp-work-card:hover .hp-work-title {
+    text-decoration-color: var(--color-ink-1);
+  }
+
+  .hp-work-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-ink-2);
+    margin: 0 0 18px;
+  }
+
+  .hp-work-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .hp-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 9px;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    color: var(--color-ink-2);
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 760px) {
+    .hp-work-grid {
+      grid-template-columns: 1fr;
+    }
+    .hp-section-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
