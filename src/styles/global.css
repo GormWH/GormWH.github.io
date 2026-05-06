@@ -269,6 +269,16 @@ a { color: inherit; text-decoration: none; }
   text-underline-offset: 3px;
 }
 
+/* Symbol glyphs (©, ·) need a font stack that always carries them — JetBrains
+   Mono can be late or blocked, and some platform monospace fallbacks render
+   these characters faintly or as missing-glyph boxes. */
+.gh-symbol {
+  font-family: system-ui, -apple-system, "Segoe UI Symbol", "Apple Symbols",
+    "Noto Sans Symbols 2", "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: normal;
+  font-variant-numeric: normal;
+}
+
 @media (max-width: 760px) {
   .gh-footer { flex-wrap: wrap; gap: 12px; }
   .gh-footer .links { margin-left: 0; width: 100%; }

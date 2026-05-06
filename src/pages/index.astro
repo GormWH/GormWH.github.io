@@ -8,21 +8,10 @@ import Writing from "@features/home/Writing.astro";
 import Contact from "@features/home/Contact.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Gorm — SuHong Park</title>
-	</head>
-	<body>
-		<BaseLayout>
-			<Hero />
-			<About />
-			<Work />
-			<Writing />
-			<Contact />
-		</BaseLayout>
-	</body>
-</html>
+<BaseLayout title="Gorm — SuHong Park">
+  <Hero />
+  <About />
+  <Work />
+  <Writing />
+  <Contact />
+</BaseLayout>
