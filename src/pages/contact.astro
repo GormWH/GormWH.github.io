@@ -1,0 +1,311 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const CHANNELS: { label: string; value: string; href: string; glyph: '→' | '↗'; external?: boolean }[] = [
+  { label: 'Email',    value: 'hello@gorm.dev',         href: 'mailto:hello@gorm.dev',         glyph: '→' },
+  { label: 'GitHub',   value: 'github.com/gorm',        href: 'https://github.com/gorm',       glyph: '↗', external: true },
+  { label: 'LinkedIn', value: 'linkedin.com/in/gorm',   href: 'https://linkedin.com/in/gorm',  glyph: '↗', external: true },
+  { label: 'Resume',   value: 'view CV (gated)',        href: '#',                             glyph: '→' },
+];
+---
+
+<BaseLayout title="Contact — Gorm." description="Reach me by email. I read everything; I reply to most things within a few days.">
+  <div class="ct-page mx-auto max-w-page px-6 sm:px-8">
+
+    <section class="ct-hero" aria-labelledby="ct-hero-h">
+      <p class="gh-section-label">Contact</p>
+      <h1 id="ct-hero-h" class="gh-section-title">If it's worth doing,<br />I'd like to hear about it.</h1>
+      <p class="gh-lead ct-lead">The best way to reach me is email. I read everything; I reply to most things within a few days.</p>
+    </section>
+
+    <section class="ct-channels" aria-label="Contact channels">
+      <ul class="ct-channels-list">
+        {CHANNELS.map((c) => (
+          <li class="ct-row">
+            <a
+              class="ct-row-link"
+              href={c.href}
+              target={c.external ? '_blank' : undefined}
+              rel={c.external ? 'noopener noreferrer' : undefined}
+            >
+              <span class="ct-row-label gh-meta">{c.label}</span>
+              <span class="ct-row-value">{c.value}</span>
+              <span class="ct-row-glyph" aria-hidden="true">{c.glyph}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="ct-where" aria-labelledby="ct-where-h">
+      <div>
+        <p class="gh-section-label">Where</p>
+        <h2 id="ct-where-h" class="gh-section-title ct-h2">Currently in Osaka, JP.</h2>
+        <p class="ct-body">I work hybrid out of 大阪 — happy to meet for coffee if you're in the city, and most weeks I'm in Tokyo for a day or two.</p>
+        <div class="ct-meta-grid">
+          <div>
+            <p class="gh-meta">Time zone</p>
+            <p class="ct-meta-val">JST · UTC+9</p>
+          </div>
+          <div>
+            <p class="gh-meta">Languages</p>
+            <p class="ct-meta-val">EN · 日本語 · 한국어</p>
+          </div>
+          <div>
+            <p class="gh-meta">Working hours</p>
+            <p class="ct-meta-val">10:00 — 19:00 JST</p>
+          </div>
+        </div>
+      </div>
+      <div class="ct-map">
+        <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Map highlighting Osaka, Japan">
+          <defs>
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--color-rule)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <g aria-hidden="true">
+            <rect width="400" height="300" fill="var(--color-bg-2)"/>
+            <rect width="400" height="300" fill="url(#grid)"/>
+            <path d="M 0,180 C 60,170 100,200 130,190 C 160,180 180,150 220,160 C 260,170 290,200 340,190 L 400,200 L 400,300 L 0,300 Z" fill="var(--color-rule)" opacity="0.5"/>
+            <path d="M 0,180 C 60,170 100,200 130,190 C 160,180 180,150 220,160 C 260,170 290,200 340,190 L 400,200" fill="none" stroke="var(--color-ink-3)" stroke-width="1"/>
+            <g transform="translate(195, 145)">
+              <circle r="22" fill="var(--color-accent)" opacity="0.18"/>
+              <circle r="12" fill="var(--color-accent)" opacity="0.32"/>
+            </g>
+          </g>
+          <g transform="translate(195, 145)">
+            <circle r="5" fill="var(--color-accent-ink)"/>
+            <circle r="2" fill="var(--color-bg)"/>
+          </g>
+          <text x="210" y="142" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--color-ink-1)" letter-spacing="1.2">OSAKA</text>
+          <text x="210" y="155" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--color-ink-2)">34.69° N · 135.50° E</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="ct-availability" aria-labelledby="ct-avail-h">
+      <p id="ct-avail-h" class="gh-section-label">Availability</p>
+      <div class="ct-avail-row">
+        <span class="ct-dot" aria-hidden="true"></span>
+        <p class="ct-avail-text"><strong>Open to short collaborations</strong> · taking on 1–2 outside projects per quarter. Best fit: AI-tooling for engineering teams, mechanical/software-bridge work, technical writing.</p>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .ct-hero {
+    padding: 80px 0 48px;
+    max-width: 880px;
+  }
+
+  .ct-lead {
+    margin-top: 24px;
+    color: var(--color-ink-2);
+    max-width: 580px;
+  }
+
+  .ct-channels {
+    padding: 24px 0;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .ct-channels-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ct-row {
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .ct-row-link {
+    display: grid;
+    grid-template-columns: 140px 1fr 32px;
+    gap: 24px;
+    padding: 22px 0;
+    align-items: center;
+    color: var(--color-ink-1);
+    text-decoration: none;
+    transition: padding-left var(--duration-base) var(--ease-mech);
+  }
+
+  .ct-row-link:hover {
+    padding-left: 12px;
+  }
+
+  .ct-row-label {
+    color: var(--color-ink-3);
+  }
+
+  .ct-row-value {
+    font-family: var(--font-headline);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    color: var(--color-ink-1);
+    text-decoration: underline transparent;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+    transition: text-decoration-color var(--duration-base) var(--ease-mech);
+  }
+
+  .ct-row-link:hover .ct-row-value {
+    text-decoration-color: var(--color-ink-1);
+  }
+
+  .ct-row-glyph {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    color: var(--color-ink-3);
+    text-align: right;
+    transition: transform var(--duration-base) var(--ease-mech), color var(--duration-fast) var(--ease-mech);
+  }
+
+  .ct-row-link:hover .ct-row-glyph {
+    transform: translateX(4px);
+    color: var(--color-ink-1);
+  }
+
+  .ct-where {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 64px;
+    padding: 96px 0;
+    align-items: start;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .ct-h2 {
+    margin-top: 18px;
+    font-size: clamp(28px, 3.5vw, 40px);
+  }
+
+  .ct-body {
+    margin-top: 18px;
+    max-width: 480px;
+    color: var(--color-ink-2);
+  }
+
+  .ct-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .ct-meta-grid > div:nth-child(3) {
+    grid-column: span 2;
+    padding-top: 18px;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .ct-meta-val {
+    font-family: var(--font-headline);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-ink-1);
+    margin: 6px 0 0;
+    letter-spacing: 0.01em;
+  }
+
+  .ct-map {
+    aspect-ratio: 4/3;
+    border-radius: var(--radius-2);
+    border: 1px solid var(--color-rule);
+    overflow: hidden;
+    background: var(--color-bg-2);
+  }
+
+  .ct-map svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .ct-availability {
+    padding: 48px 0;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .ct-avail-row {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    margin-top: 22px;
+  }
+
+  .ct-dot {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    margin-top: 8px;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 24%, transparent);
+    animation: ct-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes ct-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 24%, transparent); }
+    50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-accent) 8%, transparent); }
+  }
+
+  .ct-avail-text {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--color-ink-1);
+    max-width: 640px;
+  }
+
+  .ct-avail-text strong {
+    font-weight: 600;
+  }
+
+  @media (max-width: 759px) {
+    .ct-row-link {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding: 18px 0;
+    }
+
+    .ct-row-glyph {
+      display: none;
+    }
+
+    .ct-where {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding: 64px 0;
+    }
+
+    .ct-meta-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ct-meta-grid > div:nth-child(3) {
+      grid-column: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ct-dot {
+      animation: none;
+    }
+
+    .ct-row-link {
+      transition: none;
+    }
+
+    .ct-row-glyph {
+      transition: none;
+    }
+
+    .ct-row-value {
+      transition: none;
+    }
+  }
+</style>
