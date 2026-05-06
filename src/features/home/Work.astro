@@ -31,14 +31,14 @@ const WORK = [
 ];
 ---
 
-<section id="home-work" class="hp-section mx-auto max-w-page px-6 sm:px-8">
-  <header class="hp-section-head">
+<section id="home-work" class="gh-section mx-auto max-w-page px-6 sm:px-8">
+  <header class="gh-section-head">
     <div>
-      <p class="hp-section-label">02 — Work</p>
-      <h2 class="hp-section-title">Recent work</h2>
+      <p class="gh-section-label">02 — Work</p>
+      <h2 class="gh-section-title">Recent work</h2>
     </div>
-    <a class="hp-arrow" href="#">
-      <span class="hp-arrow-text">all projects</span>
+    <a class="gh-arrow" href="#">
+      <span class="gh-arrow-text">all projects</span>
       <span class="glyph" aria-hidden="true">→</span>
     </a>
   </header>
@@ -62,63 +62,6 @@ const WORK = [
 </section>
 
 <style>
-  .hp-section {
-    padding-block: 96px;
-  }
-
-  .hp-section-head {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 40px;
-  }
-
-  .hp-section-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: var(--tracking-meta);
-    text-transform: uppercase;
-    color: var(--color-ink-2);
-    margin: 0;
-  }
-
-  .hp-section-title {
-    font-family: var(--font-headline);
-    font-size: clamp(2.25rem, 5vw, 3.5rem);
-    line-height: 1.05;
-    letter-spacing: -0.005em;
-    font-weight: 500;
-    color: var(--color-ink-1);
-    margin: 18px 0 0;
-  }
-
-  .hp-arrow {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 8px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--color-ink-1);
-  }
-
-  .hp-arrow-text {
-    text-decoration: underline transparent;
-    text-underline-offset: 4px;
-    text-decoration-thickness: 1px;
-    transition: text-decoration-color var(--duration-fast) var(--ease-mech);
-  }
-
-  .hp-arrow:hover .hp-arrow-text {
-    text-decoration-color: var(--color-ink-1);
-  }
-
-  .glyph {
-    font-family: var(--font-mono);
-    font-size: 0.9em;
-    color: var(--color-ink-2);
-  }
-
   .hp-work-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -188,10 +131,6 @@ const WORK = [
   @media (max-width: 760px) {
     .hp-work-grid {
       grid-template-columns: 1fr;
-    }
-    .hp-section-head {
-      flex-direction: column;
-      align-items: flex-start;
     }
   }
 </style>
