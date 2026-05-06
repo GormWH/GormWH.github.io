@@ -1,5 +1,146 @@
 ---
+const WRITING: {
+  date: Date;
+  title: string;
+  kind: "Note" | "Essay" | "Log";
+  summary: string;
+}[] = [
+  {
+    date: new Date("2026-01-18"),
+    title: "Why I write the tools instead of just using them",
+    kind: "Note",
+    summary:
+      "Notes from the bench at bitset, where most of my AI tooling starts as a half-formed script before it earns a name.",
+  },
+  {
+    date: new Date("2025-09-04"),
+    title: "From CFD meshes to commit graphs",
+    kind: "Essay",
+    summary:
+      "Software engineering rewards the same pattern recognition I used to chase numerical instabilities — different vocabulary, identical instinct.",
+  },
+  {
+    date: new Date("2025-04-22"),
+    title: "The signaller's lesson",
+    kind: "Note",
+    summary:
+      "Two years as a signaller in the ROK Army taught me the wire isn't the protocol — the protocol is the people on either end of it.",
+  },
+  {
+    date: new Date("2024-11-09"),
+    title: "Re-reading my master's thesis after three years",
+    kind: "Log",
+    summary:
+      "Three years out of grad school I went back and read my own thesis. Some of it still holds. Some of it I'd cut entirely.",
+  },
+];
 ---
-<section id="home-writing">
-    <h1>Writing</h1>
+
+<section id="home-writing" class="gh-section mx-auto max-w-page px-6 sm:px-8">
+  <header class="gh-section-head">
+    <div>
+      <p class="gh-section-label">03 — Writing</p>
+      <h2 class="gh-section-title">Notes from the bench</h2>
+    </div>
+    <a class="gh-arrow" href="#">
+      <span class="gh-arrow-text">all writing</span>
+      <span class="glyph" aria-hidden="true">→</span>
+    </a>
+  </header>
+
+  <p class="hp-writing-intro">
+    I write to think out loud — short notes from the work, longer essays when
+    something earns the airtime.
+  </p>
+
+  <ol class="hp-writing-list">
+    {
+      WRITING.map((w) => (
+        <li class="hp-writing-row">
+          <p class="hp-writing-year">{w.date.getFullYear()}</p>
+          <div class="hp-writing-body">
+            <h3 class="hp-writing-title">{w.title}</h3>
+            <p class="hp-writing-summary">{w.summary}</p>
+            <span class="hp-writing-kind">{w.kind}</span>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
 </section>
+
+<style>
+  .hp-writing-intro {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-ink-1);
+    max-width: 60ch;
+    margin: 0 0 32px;
+  }
+
+  .hp-writing-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .hp-writing-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    padding: 18px 0;
+    border-top: 1px solid var(--color-rule);
+    align-items: baseline;
+  }
+
+  .hp-writing-row:last-child {
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .hp-writing-year {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+
+  .hp-writing-body {
+    max-width: 60ch;
+  }
+
+  .hp-writing-title {
+    font-family: var(--font-headline);
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 500;
+    color: var(--color-ink-1);
+    margin: 0;
+  }
+
+  .hp-writing-summary {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-ink-2);
+    margin: 8px 0 0;
+  }
+
+  .hp-writing-kind {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 9px;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    color: var(--color-ink-2);
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 760px) {
+    .hp-writing-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>

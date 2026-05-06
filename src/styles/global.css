@@ -173,3 +173,103 @@ a { color: inherit; text-decoration: none; }
     align-items: flex-start;
   }
 }
+
+/* ============================================================
+   Header — sticky paper-warm bar with sage active-dot indicator
+   ============================================================ */
+
+.gh-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding-inline: 32px;
+  /* Solid baseline for browsers without CSS Relative Color Syntax (Safari <16.4). */
+  background: var(--color-bg-overlay);
+  /* Browsers that parse this override use --color-bg at 0.78 alpha to pair with backdrop-filter.
+     Alpha intentionally diverges from --color-bg-overlay (0.7 vs 0.78) — the upgraded layer is
+     slightly more opaque so the blur stays legible over scrolled content. */
+  background: rgb(from var(--color-bg) r g b / 0.78);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.gh-link {
+  position: relative;
+  color: var(--color-ink-1);
+  text-decoration: underline transparent;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+  transition:
+    text-decoration-color var(--duration-fast) var(--ease-mech),
+    color var(--duration-fast) var(--ease-mech);
+}
+
+.gh-link:hover {
+  text-decoration-color: var(--color-ink-1);
+}
+
+.gh-link[aria-current="page"] {
+  color: var(--color-accent-ink);
+}
+
+.gh-link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+/* ============================================================
+   Footer — mono row with Oswald wordmark and right-aligned links
+   ============================================================ */
+
+.gh-footer {
+  margin: 96px 32px 32px;
+  padding-top: 22px;
+  border-top: 1px solid var(--color-rule);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-ink-2);
+  letter-spacing: 0.04em;
+}
+
+.gh-footer .word {
+  font-family: var(--font-headline);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-ink-1);
+}
+
+.gh-footer .links {
+  margin-left: auto;
+  display: flex;
+  gap: 18px;
+}
+
+.gh-footer .links a {
+  color: var(--color-ink-2);
+  transition: color var(--duration-fast) var(--ease-mech);
+}
+
+.gh-footer .links a:hover {
+  color: var(--color-ink-1);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .gh-footer { flex-wrap: wrap; gap: 12px; }
+  .gh-footer .links { margin-left: 0; width: 100%; }
+}

@@ -1,34 +1,19 @@
 ---
-const WORK = [
-  {
-    year: "2024",
-    org: "Bitset",
-    title: "Agent that respects your machine",
-    desc: "A local-first AI tool with sandboxed permissions. Designed for engineers who don't want their CLI hijacked.",
-    tags: ["Python", "Local-first", "CLI"],
-  },
-  {
-    year: "2023",
-    org: "Personal",
-    title: "CAD-to-text pipeline",
-    desc: "Take a Fusion 360 part, get a structured spec sheet a model can reason about. Ships in our shop floor toolkit.",
-    tags: ["Mech.", "LLM", "Fusion 360"],
-  },
-  {
-    year: "2020",
-    org: "ROK Army",
-    title: "Field comms automation",
-    desc: "Reduced a 40-minute radio check ritual to 6 minutes by writing the handbook the unit didn't have.",
-    tags: ["Process", "Writing"],
-  },
-  {
-    year: "2023",
-    org: "U-Tokyo",
-    title: "Master's thesis — adaptive control",
-    desc: "Closed-loop control under sensor degradation. Defended in March 2023.",
-    tags: ["Research", "Control"],
-  },
-];
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+function compareWork(a: CollectionEntry<"work">, b: CollectionEntry<"work">) {
+  const imp = Number(b.data.important) - Number(a.data.important);
+  if (imp !== 0) return imp;
+  const t = b.data.date.getTime() - a.data.date.getTime();
+  if (t !== 0) return t;
+  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+}
+
+const all = await getCollection("work", ({ data }) =>
+  import.meta.env.PROD ? !data.draft : true,
+);
+const works = all.sort(compareWork).slice(0, 4);
 ---
 
 <section id="home-work" class="gh-section mx-auto max-w-page px-6 sm:px-8">
@@ -45,13 +30,13 @@ const WORK = [
 
   <div class="hp-work-grid">
     {
-      WORK.map((p) => (
-        <a class="hp-work-card" href="#">
-          <p class="gh-meta hp-work-meta">{p.year} · {p.org}</p>
-          <h3 class="hp-work-title">{p.title}</h3>
-          <p class="hp-work-desc">{p.desc}</p>
+      works.map((entry) => (
+        <a class="hp-work-card" href={`/work/${entry.id}/`}>
+          <p class="gh-meta hp-work-meta">{entry.data.date.getFullYear()} · {entry.data.org}</p>
+          <h3 class="hp-work-title">{entry.data.title}</h3>
+          <p class="hp-work-desc">{entry.data.description}</p>
           <div class="hp-work-tags">
-            {p.tags.map((t) => (
+            {entry.data.tags.map((t) => (
               <span class="hp-tag">{t}</span>
             ))}
           </div>

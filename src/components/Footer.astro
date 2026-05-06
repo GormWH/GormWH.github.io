@@ -2,16 +2,14 @@
 const currentYear = new Date().getFullYear();
 ---
 
-<footer>
-    <span>
-        <div>
-            GormWH  © {currentYear}. Osaka, Japan
-        </div>
-        <div>
-            <a href="https://github.com/GormWH">GitHub</a>
-            <a href="https://www.linkedin.com/in/gormwh/">LinkedIn</a>
-            <a href="CV.pdf">CV</a>
-        </div>
-    </span>
-
+<footer class="gh-footer">
+  <a href="/" class="word">Gorm<span class="text-accent">.</span></a>
+  <span>© {currentYear}</span>
+  <span aria-hidden="true">·</span>
+  <span>Osaka, Japan</span>
+  <nav class="links" aria-label="Footer">
+    <a href="https://github.com/GormWH" target="_blank" rel="noreferrer">GitHub</a>
+    <a href="https://www.linkedin.com/in/gormwh/" target="_blank" rel="noreferrer">LinkedIn</a>
+    <a href="/CV.pdf">CV</a>
+  </nav>
 </footer>

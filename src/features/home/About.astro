@@ -21,12 +21,15 @@ const TIMELINE = [
     role: "B.S. Mechanical Engineering",
   },
 ];
+
+const INITIAL_VISIBLE = 4;
+const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
 ---
 
 <section id="home-about" class="gh-section mx-auto max-w-page px-6 sm:px-8">
   <header class="gh-section-head">
     <div>
-      <p class="gh-section-label">03 — About</p>
+      <p class="gh-section-label">01 — About</p>
       <h2 class="gh-section-title">A few things about me</h2>
     </div>
   </header>
@@ -51,11 +54,11 @@ const TIMELINE = [
       </p>
     </div>
 
-    <div class="hp-timeline">
+    <div class="hp-timeline" data-expanded="false">
       <p class="gh-section-label hp-timeline-label">Timeline</p>
       {
-        TIMELINE.map((t) => (
-          <div class="hp-timeline-row">
+        TIMELINE.map((t, i) => (
+          <div class:list={["hp-timeline-row", i >= INITIAL_VISIBLE && "is-overflow"]}>
             <p class="hp-timeline-years">{t.years}</p>
             <div>
               <p class="hp-timeline-org">{t.org}</p>
@@ -64,9 +67,40 @@ const TIMELINE = [
           </div>
         ))
       }
+      {
+        hasOverflow && (
+          <button
+            type="button"
+            class="hp-timeline-toggle"
+            data-timeline-toggle
+            aria-expanded="false"
+          >
+            <span data-toggle-label-show>
+              Show more <span aria-hidden="true">→</span>
+            </span>
+            <span data-toggle-label-hide hidden>Show less</span>
+          </button>
+        )
+      }
     </div>
   </div>
 </section>
+
+<script>
+  const root = document.querySelector<HTMLElement>(".hp-timeline[data-expanded]");
+  const btn = root?.querySelector<HTMLButtonElement>("[data-timeline-toggle]");
+  if (root && btn) {
+    btn.addEventListener("click", () => {
+      const willExpand = root.dataset.expanded !== "true";
+      root.dataset.expanded = String(willExpand);
+      btn.setAttribute("aria-expanded", String(willExpand));
+      const showLabel = btn.querySelector<HTMLElement>("[data-toggle-label-show]");
+      const hideLabel = btn.querySelector<HTMLElement>("[data-toggle-label-hide]");
+      if (showLabel) showLabel.hidden = willExpand;
+      if (hideLabel) hideLabel.hidden = !willExpand;
+    });
+  }
+</script>
 
 <style>
   .hp-about-grid {
@@ -143,6 +177,30 @@ const TIMELINE = [
     font-size: 13px;
     color: var(--color-ink-2);
     margin: 2px 0 0;
+  }
+
+  .hp-timeline[data-expanded="false"] .hp-timeline-row.is-overflow {
+    display: none;
+  }
+
+  .hp-timeline-toggle {
+    margin-top: 0;
+    padding: 12px 0;
+    width: 100%;
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--color-ink-3);
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-mech);
+  }
+
+  .hp-timeline-toggle:hover {
+    color: var(--color-ink-1);
   }
 
   @media (max-width: 760px) {

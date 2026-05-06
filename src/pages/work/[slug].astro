@@ -1,0 +1,29 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+import type { GetStaticPaths } from "astro";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const works = await getCollection("work", ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true,
+  );
+  return works.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+};
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout>
+  <article>
+    <header>
+      <p>{entry.data.date.toISOString().slice(0, 10)} · {entry.data.org}</p>
+      <h1>{entry.data.title}</h1>
+      <p>{entry.data.description}</p>
+    </header>
+    <Content />
+  </article>
+</BaseLayout>
