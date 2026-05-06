@@ -1,5 +1,159 @@
 ---
+const TIMELINE = [
+  {
+    years: "2023.07 — present",
+    org: "株式会社bitset",
+    role: "Software & systems engineer",
+  },
+  {
+    years: "2021.04 — 2023.03",
+    org: "University of Tokyo",
+    role: "M.S. Mechanical Engineering",
+  },
+  {
+    years: "2019.08 — 2021.02",
+    org: "Republic of Korea Army",
+    role: "Sergeant — Signaller",
+  },
+  {
+    years: "2015.04 — 2019.03",
+    org: "Osaka University",
+    role: "B.S. Mechanical Engineering",
+  },
+];
 ---
-<section id="home-about">
-    <h1>About</h1>
+
+<section id="home-about" class="gh-section mx-auto max-w-page px-6 sm:px-8">
+  <header class="gh-section-head">
+    <div>
+      <p class="gh-section-label">03 — About</p>
+      <h2 class="gh-section-title">A few things about me</h2>
+    </div>
+  </header>
+
+  <div class="hp-about-grid">
+    <div class="hp-about-prose">
+      <p class="hp-about-body">
+        I started in mechanical engineering — at Osaka University, then a
+        master's at the University of Tokyo. Between those I served as a
+        signaller in the ROK Army, where I learned that most problems are
+        communication problems with extra steps.
+      </p>
+      <p class="hp-about-body">
+        I picked up software because I needed it. The hardware side was fine;
+        the tooling around it wasn't. So I learned to write the tools myself,
+        and now I build AI-driven tooling at <a class="hp-about-link" href="#"
+          >株式会社bitset</a
+        >.
+      </p>
+      <p class="hp-about-body hp-about-emphasis">
+        I don't pick problems based on what I studied. I pick them because
+        they're worth doing.
+      </p>
+    </div>
+
+    <div class="hp-timeline">
+      <p class="gh-section-label hp-timeline-label">Timeline</p>
+      {
+        TIMELINE.map((t) => (
+          <div class="hp-timeline-row">
+            <p class="hp-timeline-years">{t.years}</p>
+            <div>
+              <p class="hp-timeline-org">{t.org}</p>
+              <p class="hp-timeline-role">{t.role}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
 </section>
+
+<style>
+  .hp-about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 64px;
+  }
+
+  .hp-about-prose {
+    max-width: 60ch;
+  }
+
+  .hp-about-body {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-ink-1);
+    margin: 0 0 18px;
+  }
+
+  .hp-about-body:last-child {
+    margin-bottom: 0;
+  }
+
+  .hp-about-link {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--color-rule-strong);
+    transition: text-decoration-color var(--duration-fast) var(--ease-mech);
+  }
+
+  .hp-about-link:hover {
+    text-decoration-color: var(--color-ink-1);
+  }
+
+  .hp-about-emphasis {
+    color: var(--color-ink-2);
+    font-weight: 500;
+  }
+
+  .hp-timeline-label {
+    margin-bottom: 18px;
+  }
+
+  .hp-timeline-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 18px;
+    padding: 14px 0;
+    border-top: 1px solid var(--color-rule);
+    align-items: baseline;
+  }
+
+  .hp-timeline-row:last-child {
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .hp-timeline-years {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+
+  .hp-timeline-org {
+    font-size: 15px;
+    color: var(--color-ink-1);
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .hp-timeline-role {
+    font-size: 13px;
+    color: var(--color-ink-2);
+    margin: 2px 0 0;
+  }
+
+  @media (max-width: 760px) {
+    .hp-about-grid {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .hp-timeline-row {
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+    }
+  }
+</style>
