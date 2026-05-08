@@ -22,3 +22,11 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# claude code — personal agent context and per-machine permission allowlist
+CLAUDE.local.md
+.claude/settings.local.json
+
+# session backups
+*.bak
+
