@@ -1,0 +1,93 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const writings = (
+  await getCollection("writing", ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true,
+  )
+).sort((a, b) => {
+  const imp = Number(b.data.important) - Number(a.data.important);
+  if (imp !== 0) return imp;
+  const t = b.data.date.getTime() - a.data.date.getTime();
+  if (t !== 0) return t;
+  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+});
+---
+
+<BaseLayout>
+  <section class="mx-auto max-w-page px-6 sm:px-8 py-16">
+    <header class="mb-10">
+      <p class="gh-meta">Writing</p>
+      <h1 class="gh-section-title">All writing</h1>
+    </header>
+
+    {
+      writings.length === 0 ? (
+        <p>No writing yet.</p>
+      ) : (
+        <ul class="writing-list">
+          {writings.map((entry) => (
+            <li class="writing-item">
+              <a class="writing-item-link" href={`/writing/${entry.id}/`}>
+                <p class="gh-meta">
+                  {entry.data.date.getFullYear()} · {entry.data.kind}
+                </p>
+                <h2 class="writing-item-title">{entry.data.title}</h2>
+                <p class="writing-item-desc">{entry.data.description}</p>
+                {entry.data.tags.length > 0 && (
+                  <div class="writing-item-tags">
+                    {entry.data.tags.map((t) => (
+                      <span class="gh-pill">{t}</span>
+                    ))}
+                  </div>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .writing-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--color-rule);
+  }
+  .writing-item {
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .writing-item-link {
+    display: block;
+    padding: var(--space-22) 0;
+    color: inherit;
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-mech);
+  }
+  .writing-item-link:hover {
+    background: var(--color-bg-2);
+  }
+  .writing-item-title {
+    font-family: var(--font-headline);
+    font-size: var(--text-22);
+    line-height: 1.2;
+    font-weight: 500;
+    margin: var(--space-8) 0 var(--space-6);
+    color: var(--color-ink-1);
+  }
+  .writing-item-desc {
+    font-size: var(--text-15);
+    line-height: 1.6;
+    color: var(--color-ink-2);
+    margin: 0 0 var(--space-10);
+  }
+  .writing-item-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+  }
+</style>

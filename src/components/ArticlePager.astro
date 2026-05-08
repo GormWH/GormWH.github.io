@@ -1,0 +1,17 @@
+---
+interface Props {
+  next: { href: string; title: string };
+}
+
+const { next } = Astro.props;
+---
+
+<nav class="gh-article-pager">
+  <a href={next.href} class="gh-article-pager-card">
+    <p class="gh-meta">Next</p>
+    <p class="gh-article-pager-title">
+      {next.title}
+      <span class="glyph"> →</span>
+    </p>
+  </a>
+</nav>

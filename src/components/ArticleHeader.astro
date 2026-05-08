@@ -1,0 +1,54 @@
+---
+interface MetaCell {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  back?: { href: string; label: string };
+  metaLeft?: string;
+  metaRight?: string;
+  title: string;
+  lead?: string;
+  metaGrid?: MetaCell[];
+}
+
+const { back, metaLeft, metaRight, title, lead, metaGrid } = Astro.props;
+---
+
+<header class="gh-article-head">
+  {
+    back && (
+      <a href={back.href} class="gh-arrow gh-article-back">
+        <span class="glyph">←</span>
+        <span class="gh-arrow-text">{back.label}</span>
+      </a>
+    )
+  }
+  {
+    (metaLeft || metaRight) && (
+      <div class="gh-article-meta-line">
+        {metaLeft && <span class="gh-meta">{metaLeft}</span>}
+        {metaLeft && metaRight && (
+          <span class="gh-article-dot" aria-hidden="true" />
+        )}
+        {metaRight && <span class="gh-meta">{metaRight}</span>}
+      </div>
+    )
+  }
+  <h1 class="gh-article-title">{title}</h1>
+  {lead && <p class="gh-article-lead">{lead}</p>}
+</header>
+
+{
+  metaGrid && metaGrid.length > 0 && (
+    <section class="gh-article-meta-grid">
+      {metaGrid.map((cell) => (
+        <div class="gh-article-meta-cell">
+          <p class="gh-meta">{cell.label}</p>
+          <p class="gh-article-meta-val">{cell.value}</p>
+        </div>
+      ))}
+    </section>
+  )
+}

@@ -296,3 +296,185 @@ a { color: inherit; text-decoration: none; }
   .gh-footer { flex-wrap: wrap; gap: var(--space-12); }
   .gh-footer-links { margin-left: 0; width: 100%; }
 }
+
+/* ============================================================
+   Markdown article shell — used by /work/[slug] & /writing/[slug]
+   ============================================================ */
+
+.gh-article {
+  max-width: var(--container-reading);
+  margin-inline: auto;
+  padding-block: var(--space-64);
+  padding-inline: var(--space-32);
+}
+
+.gh-article-head {
+  padding-block-end: var(--space-32);
+  margin-bottom: var(--space-40);
+}
+
+.gh-article-back {
+  margin-bottom: var(--space-24);
+}
+
+.gh-article-meta-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+  margin-bottom: var(--space-24);
+}
+
+.gh-article-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--color-ink-3);
+  border-radius: 50%;
+}
+
+.gh-article-title {
+  font-family: var(--font-headline);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.005em;
+  font-weight: 500;
+  color: var(--color-ink-1);
+  margin: 0 0 var(--space-24);
+  text-wrap: balance;
+}
+
+.gh-article-lead {
+  font-size: var(--text-lead);
+  line-height: var(--text-lead--line-height);
+  color: var(--color-ink-1);
+  max-width: 640px;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.gh-article-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-24);
+  padding: var(--space-24) 0;
+  margin-bottom: var(--space-40);
+  border-top: 1px solid var(--color-rule);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.gh-article-meta-val {
+  font-family: var(--font-headline);
+  font-size: var(--text-18);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-ink-1);
+  margin: var(--space-6) 0 0;
+}
+
+.gh-article-pager {
+  margin-top: var(--space-96);
+  padding-top: var(--space-24);
+  border-top: 1px solid var(--color-rule);
+}
+
+.gh-article-pager-card {
+  display: block;
+  padding: var(--space-24) 0;
+  color: var(--color-ink-1);
+  transition: color var(--duration-fast) var(--ease-mech);
+}
+.gh-article-pager-card:hover {
+  color: var(--color-accent-ink);
+}
+
+.gh-article-pager-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-22);
+  font-weight: 500;
+  margin: var(--space-6) 0 0;
+}
+
+/* `:where()` keeps these at specificity (0,0,1) so any `gh-*` class
+   used inside markdown bodies overrides automatically. */
+.gh-prose {
+  counter-reset: gh-prose-h2;
+}
+.gh-prose :where(h2) {
+  font-family: var(--font-headline);
+  font-size: var(--text-28);
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--color-ink-1);
+  counter-increment: gh-prose-h2;
+  margin: var(--space-48) 0 var(--space-12);
+  padding-top: var(--space-32);
+  border-top: 1px solid var(--color-rule);
+}
+.gh-prose :where(h2)::before {
+  content: "※ " counter(gh-prose-h2, decimal-leading-zero) " — ";
+  font-family: var(--font-mono);
+  font-size: 0.55em;
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+  vertical-align: 0.25em;
+  margin-right: var(--space-4);
+  font-weight: 400;
+}
+.gh-prose :where(h3) {
+  font-family: var(--font-headline);
+  font-size: var(--text-22);
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--color-ink-1);
+  margin: var(--space-32) 0 var(--space-10);
+}
+.gh-prose :where(p, ul, ol, blockquote) {
+  font-size: var(--text-16);
+  line-height: 1.7;
+  color: var(--color-ink-1);
+  margin: 0 0 var(--space-18);
+}
+.gh-prose :where(ul, ol) { padding-left: var(--space-22); }
+.gh-prose :where(li) { margin-bottom: var(--space-8); }
+.gh-prose :where(a) {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--color-rule);
+  transition: text-decoration-color var(--duration-fast) var(--ease-mech);
+}
+.gh-prose :where(a:hover) { text-decoration-color: var(--color-ink-1); }
+.gh-prose :where(code) {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: var(--color-bg-2);
+  padding: 2px 6px;
+  border-radius: var(--radius-1);
+}
+.gh-prose :where(pre) {
+  font-family: var(--font-mono);
+  font-size: var(--text-14);
+  background: var(--color-bg-2);
+  padding: var(--space-18) var(--space-22);
+  border-radius: var(--radius-2);
+  overflow-x: auto;
+  margin: 0 0 var(--space-22);
+}
+.gh-prose :where(pre code) {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+.gh-prose :where(blockquote) {
+  border-left: 2px solid var(--color-rule);
+  padding-left: var(--space-18);
+  color: var(--color-ink-2);
+}
+.gh-prose :where(hr) {
+  border: 0;
+  border-top: 1px solid var(--color-rule);
+  margin: var(--space-32) 0;
+}
+.gh-prose :where(strong) { font-weight: 600; color: var(--color-ink-1); }
+.gh-prose :where(img) { max-width: 100%; height: auto; border-radius: var(--radius-1); }

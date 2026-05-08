@@ -7,13 +7,13 @@ import type { CollectionEntry } from "astro:content";
 import type { GetStaticPaths } from "astro";
 
 interface Props {
-  entry: CollectionEntry<"work">;
-  next: CollectionEntry<"work"> | null;
+  entry: CollectionEntry<"writing">;
+  next: CollectionEntry<"writing"> | null;
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const works = (
-    await getCollection("work", ({ data }) =>
+  const writings = (
+    await getCollection("writing", ({ data }) =>
       import.meta.env.PROD ? !data.draft : true,
     )
   ).sort((a, b) => {
@@ -24,9 +24,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
     return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
   });
 
-  return works.map((entry, idx) => ({
+  return writings.map((entry, idx) => ({
     params: { slug: entry.id },
-    props: { entry, next: works[idx + 1] ?? null },
+    props: { entry, next: writings[idx + 1] ?? null },
   }));
 };
 
@@ -34,11 +34,11 @@ const { entry, next } = Astro.props;
 const { Content } = await render(entry);
 
 const date = entry.data.date.toISOString().slice(0, 10);
-const stack = entry.data.tags.join(" · ");
+const tagsStr = entry.data.tags.join(" · ");
 const metaGrid = [
   { label: "Date", value: date },
-  { label: "Org", value: entry.data.org },
-  ...(stack ? [{ label: "Stack", value: stack }] : []),
+  { label: "Kind", value: entry.data.kind },
+  ...(tagsStr ? [{ label: "Tags", value: tagsStr }] : []),
 ];
 ---
 
@@ -47,9 +47,9 @@ const metaGrid = [
   description={entry.data.description}
 >
   <ArticleHeader
-    back={{ href: "/work/", label: "all work" }}
+    back={{ href: "/writing/", label: "all writing" }}
     metaLeft={date}
-    metaRight={entry.data.org}
+    metaRight={entry.data.kind}
     title={entry.data.title}
     lead={entry.data.description}
     metaGrid={metaGrid}
@@ -60,7 +60,7 @@ const metaGrid = [
   {
     next && (
       <ArticlePager
-        next={{ href: `/work/${next.id}/`, title: next.data.title }}
+        next={{ href: `/writing/${next.id}/`, title: next.data.title }}
       />
     )
   }

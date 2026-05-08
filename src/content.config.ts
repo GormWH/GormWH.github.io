@@ -18,4 +18,17 @@ const work = defineCollection({
   }),
 });
 
-export const collections = { work };
+const writing = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/writing' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    kind: z.enum(['Note', 'Essay', 'Log']),
+    tags: z.array(z.string()).default([]),
+    important: z.boolean().default(false),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { work, writing };

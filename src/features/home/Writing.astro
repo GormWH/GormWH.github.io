@@ -1,39 +1,22 @@
 ---
-const WRITING: {
-  date: Date;
-  title: string;
-  kind: "Note" | "Essay" | "Log";
-  summary: string;
-}[] = [
-  {
-    date: new Date("2026-01-18"),
-    title: "Why I write the tools instead of just using them",
-    kind: "Note",
-    summary:
-      "Notes from the bench at bitset, where most of my AI tooling starts as a half-formed script before it earns a name.",
-  },
-  {
-    date: new Date("2025-09-04"),
-    title: "From CFD meshes to commit graphs",
-    kind: "Essay",
-    summary:
-      "Software engineering rewards the same pattern recognition I used to chase numerical instabilities — different vocabulary, identical instinct.",
-  },
-  {
-    date: new Date("2025-04-22"),
-    title: "The signaller's lesson",
-    kind: "Note",
-    summary:
-      "Two years as a signaller in the ROK Army taught me the wire isn't the protocol — the protocol is the people on either end of it.",
-  },
-  {
-    date: new Date("2024-11-09"),
-    title: "Re-reading my master's thesis after three years",
-    kind: "Log",
-    summary:
-      "Three years out of grad school I went back and read my own thesis. Some of it still holds. Some of it I'd cut entirely.",
-  },
-];
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+function compareWriting(
+  a: CollectionEntry<"writing">,
+  b: CollectionEntry<"writing">,
+) {
+  const imp = Number(b.data.important) - Number(a.data.important);
+  if (imp !== 0) return imp;
+  const t = b.data.date.getTime() - a.data.date.getTime();
+  if (t !== 0) return t;
+  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+}
+
+const all = await getCollection("writing", ({ data }) =>
+  import.meta.env.PROD ? !data.draft : true,
+);
+const writings = all.sort(compareWriting).slice(0, 4);
 ---
 
 <section id="home-writing" class="gh-section mx-auto max-w-page px-6 sm:px-8">
@@ -42,7 +25,7 @@ const WRITING: {
       <p class="gh-meta">03 — Writing</p>
       <h2 class="gh-section-title">Notes from the bench</h2>
     </div>
-    <a class="gh-arrow" href="#">
+    <a class="gh-arrow" href="/writing">
       <span class="gh-arrow-text">all writing</span>
       <span class="glyph" aria-hidden="true">→</span>
     </a>
@@ -55,13 +38,15 @@ const WRITING: {
 
   <ol class="hp-writing-list">
     {
-      WRITING.map((w) => (
+      writings.map((entry) => (
         <li class="gh-meta-row hp-writing-row">
-          <p class="hp-writing-year">{w.date.getFullYear()}</p>
+          <p class="hp-writing-year">{entry.data.date.getFullYear()}</p>
           <div class="hp-writing-body">
-            <h3 class="hp-writing-title">{w.title}</h3>
-            <p class="hp-writing-summary">{w.summary}</p>
-            <span class="gh-pill hp-writing-kind">{w.kind}</span>
+            <a class="hp-writing-link" href={`/writing/${entry.id}/`}>
+              <h3 class="hp-writing-title">{entry.data.title}</h3>
+            </a>
+            <p class="hp-writing-summary">{entry.data.description}</p>
+            <span class="gh-pill hp-writing-kind">{entry.data.kind}</span>
           </div>
         </li>
       ))
@@ -102,6 +87,16 @@ const WRITING: {
     max-width: 60ch;
   }
 
+  .hp-writing-link {
+    color: inherit;
+    text-decoration: none;
+    --hp-writing-uc: transparent;
+  }
+
+  .hp-writing-link:hover {
+    --hp-writing-uc: var(--color-ink-1);
+  }
+
   .hp-writing-title {
     font-family: var(--font-headline);
     font-size: var(--text-20);
@@ -109,6 +104,10 @@ const WRITING: {
     font-weight: 500;
     color: var(--color-ink-1);
     margin: 0;
+    text-decoration: underline var(--hp-writing-uc);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+    transition: text-decoration-color var(--duration-fast) var(--ease-mech);
   }
 
   .hp-writing-summary {
