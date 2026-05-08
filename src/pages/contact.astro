@@ -13,7 +13,7 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
   <div class="ct-page mx-auto max-w-page px-6 sm:px-8">
 
     <section class="ct-hero" aria-labelledby="ct-hero-h">
-      <p class="gh-section-label">Contact</p>
+      <p class="gh-meta">Contact</p>
       <h1 id="ct-hero-h" class="gh-section-title">If it's worth doing,<br />I'd like to hear about it.</h1>
       <p class="gh-lead ct-lead">The best way to reach me is email. I read everything; I reply to most things within a few days.</p>
     </section>
@@ -39,7 +39,7 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
 
     <section class="ct-where" aria-labelledby="ct-where-h">
       <div>
-        <p class="gh-section-label">Where</p>
+        <p class="gh-meta">Where</p>
         <h2 id="ct-where-h" class="gh-section-title ct-h2">Currently in Osaka, JP.</h2>
         <p class="ct-body">I work hybrid out of å¤§é˜ª â€” happy to meet for coffee if you're in the city, and most weeks I'm in Tokyo for a day or two.</p>
         <div class="ct-meta-grid">
@@ -85,7 +85,7 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
     </section>
 
     <section class="ct-availability" aria-labelledby="ct-avail-h">
-      <p id="ct-avail-h" class="gh-section-label">Availability</p>
+      <p id="ct-avail-h" class="gh-meta">Availability</p>
       <div class="ct-avail-row">
         <span class="ct-dot" aria-hidden="true"></span>
         <p class="ct-avail-text"><strong>Open to short collaborations</strong> Â· taking on 1â€“2 outside projects per quarter. Best fit: AI-tooling for engineering teams, mechanical/software-bridge work, technical writing.</p>
@@ -97,18 +97,18 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
 
 <style>
   .ct-hero {
-    padding: 80px 0 48px;
+    padding: var(--space-80) 0 var(--space-48);
     max-width: 880px;
   }
 
   .ct-lead {
-    margin-top: 24px;
+    margin-top: var(--space-24);
     color: var(--color-ink-2);
     max-width: 580px;
   }
 
   .ct-channels {
-    padding: 24px 0;
+    padding: var(--space-24) 0;
     border-top: 1px solid var(--color-rule);
   }
 
@@ -125,16 +125,22 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
   .ct-row-link {
     display: grid;
     grid-template-columns: 140px 1fr 32px;
-    gap: 24px;
-    padding: 22px 0;
+    gap: var(--space-24);
+    padding: var(--space-22) 0;
     align-items: center;
     color: var(--color-ink-1);
     text-decoration: none;
     transition: padding-left var(--duration-base) var(--ease-mech);
+    --ct-uc: transparent;
+    --ct-glyph-x: 0;
+    --ct-glyph-color: var(--color-ink-3);
   }
 
   .ct-row-link:hover {
-    padding-left: 12px;
+    padding-left: var(--space-12);
+    --ct-uc: var(--color-ink-1);
+    --ct-glyph-x: var(--space-4);
+    --ct-glyph-color: var(--color-ink-1);
   }
 
   .ct-row-label {
@@ -143,49 +149,41 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
 
   .ct-row-value {
     font-family: var(--font-headline);
-    font-size: 22px;
+    font-size: var(--text-22);
     font-weight: 500;
     letter-spacing: 0.005em;
     color: var(--color-ink-1);
-    text-decoration: underline transparent;
+    text-decoration: underline var(--ct-uc);
     text-underline-offset: 4px;
     text-decoration-thickness: 2px;
     transition: text-decoration-color var(--duration-base) var(--ease-mech);
   }
 
-  .ct-row-link:hover .ct-row-value {
-    text-decoration-color: var(--color-ink-1);
-  }
-
   .ct-row-glyph {
     font-family: var(--font-mono);
-    font-size: 22px;
-    color: var(--color-ink-3);
+    font-size: var(--text-22);
+    color: var(--ct-glyph-color);
     text-align: right;
+    transform: translateX(var(--ct-glyph-x));
     transition: transform var(--duration-base) var(--ease-mech), color var(--duration-fast) var(--ease-mech);
-  }
-
-  .ct-row-link:hover .ct-row-glyph {
-    transform: translateX(4px);
-    color: var(--color-ink-1);
   }
 
   .ct-where {
     display: grid;
     grid-template-columns: 1.1fr 1fr;
-    gap: 64px;
-    padding: 96px 0;
+    gap: var(--space-64);
+    padding: var(--space-96) 0;
     align-items: start;
     border-top: 1px solid var(--color-rule);
   }
 
   .ct-h2 {
-    margin-top: 18px;
-    font-size: clamp(28px, 3.5vw, 40px);
+    margin-top: var(--space-18);
+    font-size: clamp(var(--text-28), 3.5vw, var(--text-40));
   }
 
   .ct-body {
-    margin-top: 18px;
+    margin-top: var(--space-18);
     max-width: 480px;
     color: var(--color-ink-2);
   }
@@ -193,22 +191,22 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
   .ct-meta-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 32px;
+    gap: var(--space-24);
+    margin-top: var(--space-32);
   }
 
   .ct-meta-grid > div:nth-child(3) {
     grid-column: span 2;
-    padding-top: 18px;
+    padding-top: var(--space-18);
     border-top: 1px solid var(--color-rule);
   }
 
   .ct-meta-val {
     font-family: var(--font-headline);
-    font-size: 18px;
+    font-size: var(--text-18);
     font-weight: 500;
     color: var(--color-ink-1);
-    margin: 6px 0 0;
+    margin: var(--space-6) 0 0;
     letter-spacing: 0.01em;
   }
 
@@ -227,15 +225,15 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
   }
 
   .ct-availability {
-    padding: 48px 0;
+    padding: var(--space-48) 0;
     border-top: 1px solid var(--color-rule);
   }
 
   .ct-avail-row {
     display: flex;
-    gap: 18px;
+    gap: var(--space-18);
     align-items: flex-start;
-    margin-top: 22px;
+    margin-top: var(--space-22);
   }
 
   .ct-dot {
@@ -244,7 +242,7 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
     height: 10px;
     border-radius: 50%;
     background: var(--color-accent);
-    margin-top: 8px;
+    margin-top: var(--space-8);
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 24%, transparent);
     animation: ct-pulse 2.4s ease-in-out infinite;
   }
@@ -255,7 +253,7 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
   }
 
   .ct-avail-text {
-    font-size: 16px;
+    font-size: var(--text-16);
     line-height: 1.65;
     color: var(--color-ink-1);
     max-width: 640px;
@@ -268,8 +266,8 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
   @media (max-width: 759px) {
     .ct-row-link {
       grid-template-columns: 1fr;
-      gap: 6px;
-      padding: 18px 0;
+      gap: var(--space-6);
+      padding: var(--space-18) 0;
     }
 
     .ct-row-glyph {
@@ -278,8 +276,8 @@ const CHANNELS: { label: string; value: string; href: string; glyph: 'â†’' | 'â†
 
     .ct-where {
       grid-template-columns: 1fr;
-      gap: 32px;
-      padding: 64px 0;
+      gap: var(--space-32);
+      padding: var(--space-64) 0;
     }
 
     .ct-meta-grid {

@@ -39,7 +39,7 @@ const WRITING: {
 <section id="home-writing" class="gh-section mx-auto max-w-page px-6 sm:px-8">
   <header class="gh-section-head">
     <div>
-      <p class="gh-section-label">03 — Writing</p>
+      <p class="gh-meta">03 — Writing</p>
       <h2 class="gh-section-title">Notes from the bench</h2>
     </div>
     <a class="gh-arrow" href="#">
@@ -56,12 +56,12 @@ const WRITING: {
   <ol class="hp-writing-list">
     {
       WRITING.map((w) => (
-        <li class="hp-writing-row">
+        <li class="gh-meta-row hp-writing-row">
           <p class="hp-writing-year">{w.date.getFullYear()}</p>
           <div class="hp-writing-body">
             <h3 class="hp-writing-title">{w.title}</h3>
             <p class="hp-writing-summary">{w.summary}</p>
-            <span class="hp-writing-kind">{w.kind}</span>
+            <span class="gh-pill hp-writing-kind">{w.kind}</span>
           </div>
         </li>
       ))
@@ -71,11 +71,11 @@ const WRITING: {
 
 <style>
   .hp-writing-intro {
-    font-size: 16px;
+    font-size: var(--text-16);
     line-height: 1.7;
     color: var(--color-ink-1);
     max-width: 60ch;
-    margin: 0 0 32px;
+    margin: 0 0 var(--space-32);
   }
 
   .hp-writing-list {
@@ -85,21 +85,14 @@ const WRITING: {
   }
 
   .hp-writing-row {
-    display: grid;
     grid-template-columns: 120px 1fr;
-    gap: 24px;
-    padding: 18px 0;
-    border-top: 1px solid var(--color-rule);
-    align-items: baseline;
-  }
-
-  .hp-writing-row:last-child {
-    border-bottom: 1px solid var(--color-rule);
+    gap: var(--space-24);
+    padding: var(--space-18) 0;
   }
 
   .hp-writing-year {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-12);
     color: var(--color-ink-3);
     letter-spacing: 0.04em;
     margin: 0;
@@ -111,7 +104,7 @@ const WRITING: {
 
   .hp-writing-title {
     font-family: var(--font-headline);
-    font-size: 20px;
+    font-size: var(--text-20);
     line-height: 1.25;
     font-weight: 500;
     color: var(--color-ink-1);
@@ -119,28 +112,21 @@ const WRITING: {
   }
 
   .hp-writing-summary {
-    font-size: 15px;
+    font-size: var(--text-15);
     line-height: 1.6;
     color: var(--color-ink-2);
-    margin: 8px 0 0;
+    margin: var(--space-8) 0 0;
   }
 
   .hp-writing-kind {
     display: inline-block;
-    margin-top: 10px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    padding: 3px 9px;
-    border: 1px solid var(--color-rule);
-    border-radius: 999px;
-    color: var(--color-ink-2);
-    letter-spacing: 0.03em;
+    margin-top: var(--space-10);
   }
 
   @media (max-width: 760px) {
     .hp-writing-row {
       grid-template-columns: 1fr;
-      gap: 6px;
+      gap: var(--space-6);
     }
   }
 </style>

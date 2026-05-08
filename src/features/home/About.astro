@@ -29,7 +29,7 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
 <section id="home-about" class="gh-section mx-auto max-w-page px-6 sm:px-8">
   <header class="gh-section-head">
     <div>
-      <p class="gh-section-label">01 — About</p>
+      <p class="gh-meta">01 — About</p>
       <h2 class="gh-section-title">A few things about me</h2>
     </div>
   </header>
@@ -55,10 +55,10 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
     </div>
 
     <div class="hp-timeline" data-expanded="false">
-      <p class="gh-section-label hp-timeline-label">Timeline</p>
+      <p class="gh-meta hp-timeline-label">Timeline</p>
       {
         TIMELINE.map((t, i) => (
-          <div class:list={["hp-timeline-row", i >= INITIAL_VISIBLE && "is-overflow"]}>
+          <div class:list={["gh-meta-row hp-timeline-row", i >= INITIAL_VISIBLE && "is-overflow"]}>
             <p class="hp-timeline-years">{t.years}</p>
             <div>
               <p class="hp-timeline-org">{t.org}</p>
@@ -106,7 +106,7 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
   .hp-about-grid {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
-    gap: 64px;
+    gap: var(--space-64);
   }
 
   .hp-about-prose {
@@ -114,10 +114,10 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
   }
 
   .hp-about-body {
-    font-size: 16px;
+    font-size: var(--text-16);
     line-height: 1.7;
     color: var(--color-ink-1);
-    margin: 0 0 18px;
+    margin: 0 0 var(--space-18);
   }
 
   .hp-about-body:last-child {
@@ -142,41 +142,34 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
   }
 
   .hp-timeline-label {
-    margin-bottom: 18px;
+    margin-bottom: var(--space-18);
   }
 
   .hp-timeline-row {
-    display: grid;
     grid-template-columns: 160px 1fr;
-    gap: 18px;
-    padding: 14px 0;
-    border-top: 1px solid var(--color-rule);
-    align-items: baseline;
-  }
-
-  .hp-timeline-row:last-child {
-    border-bottom: 1px solid var(--color-rule);
+    gap: var(--space-18);
+    padding: var(--space-14) 0;
   }
 
   .hp-timeline-years {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-12);
     color: var(--color-ink-3);
     letter-spacing: 0.04em;
     margin: 0;
   }
 
   .hp-timeline-org {
-    font-size: 15px;
+    font-size: var(--text-15);
     color: var(--color-ink-1);
     font-weight: 500;
     margin: 0;
   }
 
   .hp-timeline-role {
-    font-size: 13px;
+    font-size: var(--text-13);
     color: var(--color-ink-2);
-    margin: 2px 0 0;
+    margin: 2px 0 0; /* nudge: 2px tight role-under-org offset */
   }
 
   .hp-timeline[data-expanded="false"] .hp-timeline-row.is-overflow {
@@ -185,14 +178,14 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
 
   .hp-timeline-toggle {
     margin-top: 0;
-    padding: 12px 0;
+    padding: var(--space-12) 0;
     width: 100%;
     background: none;
     border: 0;
     border-top: 1px solid var(--color-rule);
     text-align: left;
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: var(--text-12);
     letter-spacing: 0.04em;
     color: var(--color-ink-3);
     cursor: pointer;
@@ -206,11 +199,11 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
   @media (max-width: 760px) {
     .hp-about-grid {
       grid-template-columns: 1fr;
-      gap: 48px;
+      gap: var(--space-48);
     }
     .hp-timeline-row {
       grid-template-columns: 120px 1fr;
-      gap: 12px;
+      gap: var(--space-12);
     }
   }
 </style>
