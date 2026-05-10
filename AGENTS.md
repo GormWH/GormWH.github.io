@@ -1,81 +1,48 @@
 # AGENTS.md
 
-Single source of truth for contributors and AI agents. Claude Code reaches this file via `CLAUDE.md`, which is a symlink to this file.
+Single source of truth **index** for contributors and AI agents. Claude Code reaches this file via `CLAUDE.md`, which is a symlink to this file.
 
-## 1. Project
+Detailed information lives in [`docs/`](docs/README.md). This file stays short on purpose: scan the table, jump to the file you need.
+
+Root `README.md` is visitor-facing; `AGENTS.md` is the contributor index. Subjects covered in both must agree, but tone may differ.
+
+## Project at a glance
 
 Astro 6 static site for a personal portfolio, deployed to GitHub Pages at `https://GormWH.github.io` (user/org root, no project subpath).
 
-## 2. Commands
+- Package manager: **pnpm** (Node `>=22.12.0`).
+- Deploy gate: `pnpm build`. Run `pnpm check` before pushing.
+- No test suite, no linter, no formatter.
 
-Package manager is **pnpm** (Node `>=22.12.0`). `pnpm-workspace.yaml` allowlists `esbuild` and `sharp` for native builds.
+## Where to look
 
-| Command | Purpose |
+| Topic | File |
 | --- | --- |
-| `pnpm install` | Install deps |
-| `pnpm dev` | Astro dev server at `localhost:4321` |
-| `pnpm build` | Production build to `./dist/` |
-| `pnpm preview` | Serve `./dist/` locally |
-| `pnpm check` | Type-check `.astro` + TS via `astro check` |
+| Commands & gates | [`docs/commands.md`](docs/commands.md) |
+| Stack, path aliases, feature-folder rule | [`docs/architecture.md`](docs/architecture.md) |
+| Tailwind v4 tokens, `gh-*` / `hp-*` conventions | [`docs/styling.md`](docs/styling.md) |
+| File-based routes & deploy target | [`docs/routing.md`](docs/routing.md) |
+| Copy voice, glyph allowlist, languages | [`docs/brand-voice.md`](docs/brand-voice.md) |
+| Commit message rules (no AI byline) | [`docs/commit-style.md`](docs/commit-style.md) |
+| `.claude/` allowlist & hooks | [`docs/claude-settings.md`](docs/claude-settings.md) |
+| `astro-tailwind-reviewer` subagent | [`docs/reviewer-subagent.md`](docs/reviewer-subagent.md) |
+| Project skills (`new-section`, …) | [`docs/skills.md`](docs/skills.md) |
+| Content collections & MarkdownLayout (stub) | [`docs/content-pipeline.md`](docs/content-pipeline.md) |
+| `design-system/` reference UI kits (stub) | [`docs/design-system.md`](docs/design-system.md) |
+| `src/lib/` and `src/scripts/` (stub) | [`docs/lib-and-scripts.md`](docs/lib-and-scripts.md) |
 
-There is no test suite, no linter, and no formatter wired up — don't invent commands for them. The deploy gate is `pnpm build`. Run `pnpm check` before pushing.
+For the index of `docs/` and its contribution rules, see [`docs/README.md`](docs/README.md).
 
-## 3. Architecture
+## Rules for this index
 
-### Stack
-- **Astro 6** with the **React** integration (`@astrojs/react`) — React is available for islands but currently every page-level file is `.astro`.
-- **Tailwind v4** via the Vite plugin (`@tailwindcss/vite`), configured in `astro.config.mjs`. There is **no `tailwind.config.*`** — all design tokens are declared in `@theme { ... }` inside `src/styles/global.css` (Tailwind v4 CSS-first config).
-- TypeScript via `astro/tsconfigs/strictest` (see `tsconfig.json`).
+See [docs/governance.md](docs/governance.md#rules) for the rules governing this file.
 
-### Path aliases (`tsconfig.json`)
-- `@components/*` → `src/components/*` — site-wide chrome (Header, Footer)
-- `@layouts/*` → `src/layouts/*` — page shells (currently `BaseLayout.astro` which mounts global CSS, Google Fonts preconnect, Header, `<slot />`, Footer)
-- `@features/*` → `src/features/*` — page-scoped sections grouped by route, e.g. `features/home/{Hero,About,Work,Writing,Contact}.astro` composed by `pages/index.astro`
+## Hard rules that always apply (do not move into `docs/`)
 
-When adding a new page section, follow the **feature-folder** convention (`features/<route>/<Section>.astro`) rather than dumping into `components/`.
+These are short enough to live here and important enough to be unmissable:
 
-### Styling system
-Design tokens live in `src/styles/global.css` as Tailwind v4 `@theme` variables. They generate utilities automatically:
-- `--color-*` → `bg-*` / `text-*` / `border-*` (e.g. `bg-bg`, `text-ink-1`, `text-accent-ink`)
-- `--font-display|body|headline|serif|mono` → `font-display` etc.
-- `--text-12 ... --text-104` plus semantic `--text-display` / `--text-lead` (with paired `--line-height` / `--letter-spacing` / `--font-weight` modifiers)
-- `--container-page` (1280px) / `--container-reading` (720px) → `max-w-page` / `max-w-reading`. **Do not use `--container-content`** — `max-content` is a CSS keyword and would collide.
-- `--radius-1/2/3`, `--ease-mech`, `--duration-fast/base/slow`, `--shadow-overlay`
-
-Component classes prefixed `gh-*` (e.g. `gh-display`, `gh-btn`, `gh-btn-primary`, `gh-meta`, `gh-section`, `gh-section-head`, `gh-section-title`) and page-scoped `hp-*` (homepage hero / about) are also defined in `global.css`. Reach for tokens/utilities first; only add a new `gh-*` class when a pattern recurs.
-
-### Routing & deployment
-- File-based routing under `src/pages/`. Live routes: `index.astro`, `work/index.astro`, `work/[slug].astro`, `contact.astro`. The `Header` component also references `/about` and `/blog` — those routes still need to be created.
-- `astro.config.mjs` sets `site: 'https://GormWH.github.io'` (used for canonical URLs and the sitemap). No `base` is set, so the deploy expects the user/organization Pages root, not a project subpath.
-
-## 4. Brand voice (when writing copy)
-
-Personal copy uses **`I` voice**, calm and direct (no `we`). Project descriptions use neutral third-person. **No emoji.** Allowed glyphs: `→ · — ※ ✻`. Sentence case for headings; ALL CAPS only for tiny mono labels. Languages in scope: EN / JP / KR — the live hero already mixes all three (`한국어 · 日本語 · English`).
-
-## 5. Commit messages
-
-- **Summary:** one line, max ~70 chars, conventional-commits prefix for source code changes (`feat`, `chore`, `refactor`, `fix`, `docs`, etc.). Sentence case in the body is fine.
-- **Body (optional):** max **5 lines**, wrapped near 72 chars per line. Explain *why* the change exists, not what the diff shows.
-- **No AI / tooling attribution.** Do NOT add `Co-Authored-By: Claude …` or any agent/AI byline. The git author is the human contributor.
-- **No internal planning-artifact references.** Do NOT mention `.omc/plans/…`, agent transcripts, or workflow internals (ralph, ralplan, etc.) in commit messages.
-- For `--no-ff` merges, the merge message follows the same rule — usually one line is enough.
-
-## 6. `.claude/` settings
-
-The committed `.claude/settings.json` allowlists a small, conservative set of commands so AI agents don't trigger a permission prompt for routine work: `pnpm install|dev|build|preview|check|astro check`, read-only `git status|diff|log|show`, and the `astro-docs` MCP search. It also wires one PreToolUse hook (`.claude/hooks/block-build-artifacts.py`) that refuses Edit/Write/MultiEdit when the target path has `dist` or `.astro` as a path segment.
-
-Intentionally **not** in the public allowlist (these grant arbitrary code execution or destructive ops):
-- `Bash(pnpm exec *)` — would allow `pnpm exec node -e '<anything>'`.
-- `Bash(pnpm add *)` and `Bash(pnpm astro add *)` — install hooks run on add.
-- `Bash(pnpm astro telemetry *)` — side-effecting.
-- `Bash(git push *)`, `Bash(git reset --hard *)`, broad `Bash(git *)` — destructive.
-
-Personal extras live in `.claude/settings.local.json`, which is gitignored. Add what you need locally; don't promote to the committed file without thinking about blast radius.
-
-## 7. Reviewer subagent
-
-`.claude/agents/astro-tailwind-reviewer.md` is a read-only reviewer that enforces the rules in §3 (Tailwind v4 token discipline, no new `tailwind.config.*`, no raw hex when a token exists, no `--container-content`, sections under `features/<route>/`, `gh-*` vs `hp-*` discipline). It is automatically invoked as the last numbered step of the `new-section` skill, and can be invoked manually via `@astro-tailwind-reviewer` whenever you've changed `.astro` files or `src/styles/global.css`.
-
-## 8. `new-section` skill
-
-Run `/new-section <route> <SectionName>` (user-invocable only) to scaffold a new feature-folder section at `src/features/<route>/<SectionName>.astro` using the standard template (`gh-section`, `gh-section-head`, `gh-meta` + numbered label, `gh-section-title`). The skill prints the import line and JSX usage to paste into `src/pages/<route>.astro` (or the route's `index.astro`), and finishes by invoking the reviewer.
+- **No emoji** in copy. Allowed glyphs: `→ · — ※ ✻`. ([`docs/brand-voice.md`](docs/brand-voice.md))
+- **No `tailwind.config.*`.** Tokens live in `@theme { ... }` inside `src/styles/global.css`. ([`docs/styling.md`](docs/styling.md))
+- **No `--container-content`** — collides with the `max-content` CSS keyword. ([`docs/styling.md`](docs/styling.md))
+- **No AI / tooling attribution in commits.** No `Co-Authored-By: Claude …`, no `.omc/plans/…` references. ([`docs/commit-style.md`](docs/commit-style.md))
+- **Sections go in `src/features/<route>/`**, not `src/components/`. ([`docs/architecture.md`](docs/architecture.md))
