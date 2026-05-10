@@ -22,7 +22,6 @@
     /* Fonts */
     --font-body:     'Work Sans', 'Noto Sans JP', 'Noto Sans KR', system-ui, sans-serif;
     --font-headline: 'Oswald', 'Noto Sans JP', system-ui, sans-serif;
-    --font-serif:    'Zen Old Mincho', 'Noto Serif JP', Georgia, serif;
     --font-mono:     'JetBrains Mono', 'SF Mono', Consolas, monospace;
 
     /* Spacing scale — convention: --space-N == Npx (N is the px value).

@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import oswald500Url from "@fontsource/oswald/files/oswald-latin-500-normal.woff2?url";
+import workSansVarUrl from "@fontsource-variable/work-sans/files/work-sans-latin-wght-normal.woff2?url";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import type { SeoProps } from "@lib/seo";
@@ -62,16 +64,8 @@ const { publishedTime, modifiedTime, tags } = seo ?? {};
 
     {seo?.jsonLd && <script is:inline type="application/ld+json" set:html={serializeJsonLd(seo.jsonLd)} />}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Work+Sans:wght@300..700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@300..700&family=Noto+Sans+KR:wght@300..700&family=Zen+Old+Mincho:wght@400;500;600;700;900&display=swap"
-    />
+    <link rel="preload" as="font" type="font/woff2" href={workSansVarUrl} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={oswald500Url} crossorigin />
   </head>
   <body>
     <a href="#main-content" class="gh-skip-link">Skip to content</a>

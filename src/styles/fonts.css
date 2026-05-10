@@ -1,0 +1,58 @@
+/* ============================================================
+   Self-hosted fonts — see .omc/improvements/04-self-host-fonts.md
+   ------------------------------------------------------------
+   Audit (src/ — .astro and .css files, 2026-05-10):
+     Oswald          — weight 500 only           → static 500
+     Work Sans       — weights 400, 500, 600     → variable (covers range)
+     JetBrains Mono  — weights 400, 500          → variable (covers range)
+     Mincho serif    — zero references in src/   → DROPPED, serif token removed
+     Noto Sans JP/KR — body+headline fallback    → SYSTEM ONLY (see below)
+   CJK strategy: NOT self-hosted.
+   The fontsource Noto Sans JP / KR subset files are ~500KB–1MB
+   each per weight. Self-hosting them would push the home page
+   first-paint payload over 3MB — far worse UX than the system
+   fallback. macOS/iOS (Hiragino), Windows (Yu Gothic UI), Android
+   (Noto Sans CJK), and most Linux distros ship CJK fonts that
+   render the few identity strings on this site (`株式会社bitset`,
+   `한국어 · 日本語 · English`, etc.) faithfully. The token stacks
+   in src/styles/theme.css keep `'Noto Sans JP'` and `'Noto Sans KR'`
+   in the fallback chain so visitors who already have Noto installed
+   (Android default, most Linux) still get it natively, with zero
+   download and zero CLS.
+   Metrics overrides: Work Sans only (canonical values from
+   https://www.industrialempathy.com/perfect-ish-font-fallback/,
+   fetched 2026-05-10). No metrics overrides on Oswald (one large
+   headline reflowing once is acceptable). No metrics overrides on
+   JetBrains Mono (used only in low-profile meta lines).
+   ============================================================ */
+
+/* Oswald 500 — headline, single static weight. */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('@fontsource/oswald/files/oswald-latin-500-normal.woff2') format('woff2');
+}
+
+/* Work Sans variable — body, weights 400..600 actually used. */
+@font-face {
+  font-family: 'Work Sans';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('@fontsource-variable/work-sans/files/work-sans-latin-wght-normal.woff2') format('woff2-variations');
+  size-adjust: 100.06%;
+  ascent-override: 95.6%;
+  descent-override: 25.1%;
+  line-gap-override: 0%;
+}
+
+/* JetBrains Mono variable — code/meta, weights 400..500 used. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations');
+}

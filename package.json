@@ -25,6 +25,9 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/sitemap": "^3.7.2",
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource-variable/work-sans": "^5.2.8",
+    "@fontsource/oswald": "^5.2.8",
     "playwright": "^1.49.1",
     "typescript": "^6.0.3"
   }
