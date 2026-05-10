@@ -18,7 +18,7 @@ export const DEFAULT_OG_IMAGE = '/og-default.png';
 export const DEFAULT_DESCRIPTION = 'SuHong Park — software, hardware, AI tooling.';
 export const TWITTER_CARD = 'summary_large_image';
 export const GITHUB_URL = 'https://github.com/GormWH';
-export const LINKEDIN_URL = 'https://www.linkedin.com/in/gormwh/';
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/su-hong-park-1aa107216/';
 
 export function absoluteUrl(path: string, site: URL | undefined): string {
   if (!site) return path;
