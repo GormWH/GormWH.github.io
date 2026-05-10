@@ -1,28 +1,8 @@
 ---
-const CONTACTS = [
-  {
-    label: "Email",
-    text: "hello@gorm.dev",
-    href: "mailto:hello@gorm.dev",
-    external: false,
-  },
-  {
-    label: "GitHub",
-    text: "github.com/gorm",
-    href: "#",
-    external: true,
-  },
-  {
-    label: "Resume",
-    text: "view CV",
-    href: "#",
-    external: false,
-  },
-];
+import { channels } from "../../data/contact-channels";
+// Channel set is shared with /contact/ (src/data/contact-channels.ts); presentation diverges by design — see .omc/improvements/01-fix-dead-links-and-ctas.md.
 ---
 
-<!-- TODO: divergence from /contact page (src/pages/contact.astro) is intentional for now.
-     Reconcile when extracting a shared ChannelsList.astro component. -->
 <section id="home-contact" class="gh-section mx-auto max-w-page px-6 sm:px-8">
   <header class="gh-section-head">
     <div>
@@ -35,7 +15,7 @@ const CONTACTS = [
 
   <div class="hp-contact-grid">
     {
-      CONTACTS.map((c) => (
+      channels.map((c) => (
         <div>
           <p class="gh-meta hp-contact-cell-label">{c.label}</p>
           <a
@@ -44,7 +24,7 @@ const CONTACTS = [
             target={c.external ? "_blank" : undefined}
             rel={c.external ? "noopener noreferrer" : undefined}
           >
-            <span class="gh-arrow-text">{c.text}</span>
+            <span class="gh-arrow-text">{c.value}</span>
             <span class="glyph" aria-hidden="true">→</span>
           </a>
         </div>

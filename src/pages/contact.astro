@@ -1,26 +1,20 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-
-const CHANNELS: { label: string; value: string; href: string; external?: boolean }[] = [
-  { label: 'Email',    value: 'hello@gorm.dev',         href: 'mailto:hello@gorm.dev'                       },
-  { label: 'GitHub',   value: 'github.com/gorm',        href: 'https://github.com/gorm',     external: true },
-  { label: 'LinkedIn', value: 'linkedin.com/in/gorm',   href: 'https://linkedin.com/in/gorm', external: true },
-  { label: 'Resume',   value: 'view CV (gated)',        href: '#'                                           },
-];
+import { channels } from "../data/contact-channels";
 ---
 
-<BaseLayout title="Contact — Gorm." description="Reach me by email. I read everything; I reply to most things within a few days.">
+<BaseLayout title="Contact — Gorm." description="Reach me on LinkedIn. I read everything; I reply to most things within a few days.">
   <div class="ct-page mx-auto max-w-page px-6 sm:px-8">
 
     <section class="ct-hero" aria-labelledby="ct-hero-h">
       <p class="gh-meta">Contact</p>
       <h1 id="ct-hero-h" class="gh-section-title">If it's worth doing,<br />I'd like to hear about it.</h1>
-      <p class="gh-lead ct-lead">The best way to reach me is email. I read everything; I reply to most things within a few days.</p>
+      <p class="gh-lead ct-lead">LinkedIn is the easiest way to reach me. I read everything; I reply to most things within a few days.</p>
     </section>
 
     <section class="ct-channels" aria-label="Contact channels">
       <ul class="ct-channels-list">
-        {CHANNELS.map((c) => (
+        {channels.map((c) => (
           <li class="ct-row">
             <a
               class="ct-row-link"
