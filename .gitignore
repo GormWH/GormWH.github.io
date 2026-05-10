@@ -26,6 +26,13 @@ pnpm-debug.log*
 # claude code — personal agent context and per-machine permission allowlist
 CLAUDE.local.md
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
+
+# oh-my-claudecode working directory — plans, sessions, ad-hoc agent docs
+.omc/
+
+# design-system reference kits — local-only working copy, not shipped
+design-system/
 
 # session backups
 *.bak
