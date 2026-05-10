@@ -74,8 +74,9 @@ const { publishedTime, modifiedTime, tags } = seo ?? {};
     />
   </head>
   <body>
+    <a href="#main-content" class="gh-skip-link">Skip to content</a>
     <Header />
-    <main>
+    <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <Footer />

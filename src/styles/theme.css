@@ -6,6 +6,8 @@
     --color-ink-1: #1A1A18;
     --color-ink-1-hover: #2C2C29;
     --color-ink-2: #6B6A64;
+    /* ink-3 fails AA on bg (~2.6:1) — reserved for tracking-meta uppercase
+       labels and decorative dots only. Body/interactive text uses ink-2. */
     --color-ink-3: #A6A49B;
     --color-ink-4: #C9C7BE;
     --color-rule: #DEDCD2;
