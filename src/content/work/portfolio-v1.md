@@ -7,10 +7,10 @@ tags: ["Astro", "TypeScript", "GitHub Pages"]
 important: true
 ---
 
-**Design → deploy:** 3 days (2026-05-06 → 2026-05-09)
-**Commits to v1:** 22
-**CD:** GitHub Actions (`.github/workflows/deploy.yml`, push to `main` ships)
-**Content:** Markdown collections (`work`, `writing`) validated by Zod at build time
+- **Design → deploy:** 3 days (2026-05-06 → 2026-05-09)
+- **Commits to v1:** 22
+- **CD:** GitHub Actions (`.github/workflows/deploy.yml`, push to `main` ships)
+- **Content:** Markdown collections (`work`, `writing`) validated by Zod at build time
 
 This is the post about the site that's hosting it. v1 is an Astro site on GitHub Pages, designed with Claude as an iterative partner and shipped with a small set of guardrails so the AI collaboration didn't drift off-system. Below — why I started, why this stack, how I designed it, how I built it.
 

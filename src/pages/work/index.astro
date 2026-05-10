@@ -1,6 +1,9 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import TagFilter from "@components/TagFilter.astro";
+import CollectionList from "@components/CollectionList.astro";
 import { getCollection } from "astro:content";
+import { collectTags } from "@lib/tagFilter";
 
 const works = (
   await getCollection("work", ({ data }) =>
@@ -13,12 +16,16 @@ const works = (
   if (t !== 0) return t;
   return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
 });
+
+const tags = collectTags(works);
 ---
 
 <BaseLayout>
   <section class="mx-auto max-w-page px-6 sm:px-8 py-16">
     <header class="mb-10">
-      <p class="gh-meta">Work</p>
+      <p class="gh-meta">
+        Work · <span data-tag-filter-count>{works.length}</span>
+      </p>
       <h1 class="gh-section-title">All projects</h1>
     </header>
 
@@ -26,68 +33,15 @@ const works = (
       works.length === 0 ? (
         <p>No work entries yet.</p>
       ) : (
-        <ul class="work-list">
-          {works.map((entry) => (
-            <li class="work-item">
-              <a class="work-item-link" href={`/work/${entry.id}/`}>
-                <p class="gh-meta">
-                  {entry.data.date.getFullYear()} · {entry.data.org}
-                </p>
-                <h2 class="work-item-title">{entry.data.title}</h2>
-                <p class="work-item-desc">{entry.data.description}</p>
-                {entry.data.tags.length > 0 && (
-                  <div class="work-item-tags">
-                    {entry.data.tags.map((t) => (
-                      <span class="gh-pill">{t}</span>
-                    ))}
-                  </div>
-                )}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div data-tag-filter-root data-collection="work">
+          <TagFilter tags={tags} variant="listing" />
+          <CollectionList
+            entries={works}
+            collection="work"
+            variant="listing"
+          />
+        </div>
       )
     }
   </section>
 </BaseLayout>
-
-<style>
-  .work-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    border-top: 1px solid var(--color-rule);
-  }
-  .work-item {
-    border-bottom: 1px solid var(--color-rule);
-  }
-  .work-item-link {
-    display: block;
-    padding: var(--space-22) 0;
-    color: inherit;
-    text-decoration: none;
-    transition: background var(--duration-fast) var(--ease-mech);
-  }
-  .work-item-link:hover {
-    background: var(--color-bg-2);
-  }
-  .work-item-title {
-    font-family: var(--font-headline);
-    font-size: var(--text-22);
-    line-height: 1.2;
-    font-weight: 500;
-    margin: var(--space-8) 0 var(--space-6);
-    color: var(--color-ink-1);
-  }
-  .work-item-desc {
-    font-size: var(--text-15);
-    line-height: 1.6;
-    color: var(--color-ink-2);
-    margin: 0 0 var(--space-10);
-  }
-  .work-item-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-6);
-  }
-</style>

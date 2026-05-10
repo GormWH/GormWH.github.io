@@ -2,6 +2,8 @@
 import MarkdownLayout from "@layouts/MarkdownLayout.astro";
 import ArticleHeader from "@components/ArticleHeader.astro";
 import ArticlePager from "@components/ArticlePager.astro";
+import CollectionSidebar from "@components/CollectionSidebar.astro";
+import CollectionToc from "@components/CollectionToc.astro";
 import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import type { GetStaticPaths } from "astro";
@@ -9,6 +11,7 @@ import type { GetStaticPaths } from "astro";
 interface Props {
   entry: CollectionEntry<"work">;
   next: CollectionEntry<"work"> | null;
+  all: CollectionEntry<"work">[];
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -26,12 +29,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return works.map((entry, idx) => ({
     params: { slug: entry.id },
-    props: { entry, next: works[idx + 1] ?? null },
+    props: { entry, next: works[idx + 1] ?? null, all: works },
   }));
 };
 
-const { entry, next } = Astro.props;
-const { Content } = await render(entry);
+const { entry, next, all } = Astro.props;
+const { Content, headings } = await render(entry);
 
 const date = entry.data.date.toISOString().slice(0, 10);
 const stack = entry.data.tags.join(" · ");
@@ -42,10 +45,15 @@ const metaGrid = [
 ];
 ---
 
-<MarkdownLayout
-  title={entry.data.title}
-  description={entry.data.description}
->
+<MarkdownLayout title={entry.data.title} description={entry.data.description}>
+  <CollectionSidebar
+    slot="left"
+    entries={all}
+    collection="work"
+    currentEntry={entry}
+  />
+  <CollectionToc slot="right" headings={headings} />
+
   <ArticleHeader
     back={{ href: "/work/", label: "all work" }}
     metaLeft={date}
