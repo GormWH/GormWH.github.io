@@ -1,17 +1,24 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import type { SeoProps } from "@lib/seo";
 
 interface Props {
   title: string;
   description: string;
+  seo?: SeoProps;
 }
 
 const { title, description } = Astro.props;
+const mergedSeo: SeoProps = {
+  description,
+  ogType: 'article',
+  ...(Astro.props.seo ?? {}),
+};
 const hasLeft = Astro.slots.has("left");
 const hasRight = Astro.slots.has("right");
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} seo={mergedSeo}>
   <div
     class:list={[
       "gh-article-shell",

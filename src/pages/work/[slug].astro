@@ -7,6 +7,7 @@ import CollectionToc from "@components/CollectionToc.astro";
 import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import type { GetStaticPaths } from "astro";
+import { buildArticleSchema, absoluteUrl, DEFAULT_OG_IMAGE } from "@lib/seo";
 
 interface Props {
   entry: CollectionEntry<"work">;
@@ -43,9 +44,26 @@ const metaGrid = [
   { label: "Org", value: entry.data.org },
   ...(stack ? [{ label: "Stack", value: stack }] : []),
 ];
+
+const workJsonLd = buildArticleSchema({
+  url: absoluteUrl(Astro.url.pathname, Astro.site),
+  headline: entry.data.title,
+  description: entry.data.description,
+  datePublished: entry.data.date,
+  image: absoluteUrl(DEFAULT_OG_IMAGE, Astro.site),
+});
 ---
 
-<MarkdownLayout title={entry.data.title} description={entry.data.description}>
+<MarkdownLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  seo={{
+    articleType: 'Article',
+    jsonLd: workJsonLd,
+    publishedTime: entry.data.date.toISOString(),
+    tags: entry.data.tags,
+  }}
+>
   <CollectionSidebar
     slot="left"
     entries={all}
