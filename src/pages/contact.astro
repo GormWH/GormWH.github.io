@@ -1,11 +1,11 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 
-const CHANNELS: { label: string; value: string; href: string; glyph: '→' | '↗'; external?: boolean }[] = [
-  { label: 'Email',    value: 'hello@gorm.dev',         href: 'mailto:hello@gorm.dev',         glyph: '→' },
-  { label: 'GitHub',   value: 'github.com/gorm',        href: 'https://github.com/gorm',       glyph: '↗', external: true },
-  { label: 'LinkedIn', value: 'linkedin.com/in/gorm',   href: 'https://linkedin.com/in/gorm',  glyph: '↗', external: true },
-  { label: 'Resume',   value: 'view CV (gated)',        href: '#',                             glyph: '→' },
+const CHANNELS: { label: string; value: string; href: string; external?: boolean }[] = [
+  { label: 'Email',    value: 'hello@gorm.dev',         href: 'mailto:hello@gorm.dev'                       },
+  { label: 'GitHub',   value: 'github.com/gorm',        href: 'https://github.com/gorm',     external: true },
+  { label: 'LinkedIn', value: 'linkedin.com/in/gorm',   href: 'https://linkedin.com/in/gorm', external: true },
+  { label: 'Resume',   value: 'view CV (gated)',        href: '#'                                           },
 ];
 ---
 
@@ -30,7 +30,10 @@ const CHANNELS: { label: string; value: string; href: string; glyph: '→' | '�
             >
               <span class="ct-row-label gh-meta">{c.label}</span>
               <span class="ct-row-value">{c.value}</span>
-              <span class="ct-row-glyph" aria-hidden="true">{c.glyph}</span>
+              <span
+                class:list={["ct-row-glyph", c.external && "ct-row-glyph-external"]}
+                aria-hidden="true"
+              >→</span>
             </a>
           </li>
         ))}
@@ -166,6 +169,12 @@ const CHANNELS: { label: string; value: string; href: string; glyph: '→' | '�
     text-align: right;
     transform: translateX(var(--ct-glyph-x));
     transition: transform var(--duration-base) var(--ease-mech), color var(--duration-fast) var(--ease-mech);
+  }
+
+  /* External-link variant — rotate the allowlisted `→` to point
+     northeast for outbound channels (GitHub, LinkedIn). */
+  .ct-row-glyph-external {
+    transform: translateX(var(--ct-glyph-x)) rotate(-45deg);
   }
 
   .ct-where {

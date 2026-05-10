@@ -20,7 +20,13 @@ const { back, metaLeft, metaRight, title, lead, metaGrid } = Astro.props;
   {
     back && (
       <a href={back.href} class="gh-arrow gh-article-back">
-        <span class="glyph">←</span>
+        <span
+          class="glyph"
+          style="display:inline-block;transform:rotate(180deg)"
+          aria-hidden="true"
+        >
+          →
+        </span>
         <span class="gh-arrow-text">{back.label}</span>
       </a>
     )
