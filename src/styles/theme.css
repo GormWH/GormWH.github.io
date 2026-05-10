@@ -98,6 +98,10 @@
     --container-page: 1280px;
     --container-reading: 720px;
 
+    /* Layout dimensions — shared between the sticky header and any
+       elements that need to offset against it (e.g. `.gh-article-rail`). */
+    --height-header: 56px;
+
     /* Shadow */
     --shadow-overlay: 0 1px 2px rgba(0,0,0,.04), 0 8px 32px rgba(0,0,0,.08);
 

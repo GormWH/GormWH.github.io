@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { collectTags, normalizeTag } from "@lib/tagFilter";
+import TagFilter from "@components/TagFilter.astro";
+import CollectionList from "@components/CollectionList.astro";
+
+type AnyEntry =
+  | CollectionEntry<"work">
+  | CollectionEntry<"writing">;
+
+interface Props {
+  entries: AnyEntry[];
+  collection: "work" | "writing";
+  currentEntry: AnyEntry;
+}
+
+const { entries, collection, currentEntry } = Astro.props;
+const tags = collectTags(entries);
+const initialTags = currentEntry.data.tags
+  .map(normalizeTag)
+  .filter(Boolean)
+  .join(",");
+
+const collectionLabel = collection === "work" ? "Work" : "Writing";
+---
+
+<aside
+  class="gh-aside-collection"
+  data-tag-filter-root
+  data-collection={collection}
+  data-initial-tags={initialTags}
+>
+  <p class="gh-meta gh-aside-label">
+    {collectionLabel} · <span data-tag-filter-count>{entries.length}</span>
+  </p>
+  <TagFilter tags={tags} variant="sidebar" />
+  <CollectionList
+    entries={entries}
+    collection={collection}
+    variant="sidebar"
+    currentId={currentEntry.id}
+  />
+</aside>

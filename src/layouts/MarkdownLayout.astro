@@ -7,10 +7,34 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const hasLeft = Astro.slots.has("left");
+const hasRight = Astro.slots.has("right");
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class="gh-article">
-    <slot />
-  </article>
+  <div
+    class:list={[
+      "gh-article-shell",
+      hasLeft && "gh-article-shell-with-left",
+      hasRight && "gh-article-shell-with-right",
+    ]}
+  >
+    {
+      hasLeft && (
+        <div class="gh-article-rail gh-article-rail-left">
+          <slot name="left" />
+        </div>
+      )
+    }
+    <article class="gh-article">
+      <slot />
+    </article>
+    {
+      hasRight && (
+        <div class="gh-article-rail gh-article-rail-right">
+          <slot name="right" />
+        </div>
+      )
+    }
+  </div>
 </BaseLayout>

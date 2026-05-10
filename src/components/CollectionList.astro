@@ -1,0 +1,65 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { entryTagsAttr } from "@lib/tagFilter";
+
+type AnyEntry =
+  | CollectionEntry<"work">
+  | CollectionEntry<"writing">;
+
+interface Props {
+  entries: AnyEntry[];
+  collection: "work" | "writing";
+  variant: "listing" | "sidebar";
+  currentId?: string;
+}
+
+const { entries, collection, variant, currentId } = Astro.props;
+
+function metaSecondary(e: AnyEntry): string {
+  if (e.collection === "work") return e.data.org;
+  return e.data.kind;
+}
+---
+
+<ul
+  class:list={["gh-collection-list", `gh-collection-list-${variant}`]}
+  data-tag-filter-list
+>
+  {
+    entries.map((entry) => (
+      <li
+        class:list={[
+          "gh-collection-item",
+          currentId === entry.id && "gh-collection-item-current",
+        ]}
+        data-entry-tags={entryTagsAttr(entry.data.tags)}
+      >
+        <a
+          class="gh-collection-link"
+          href={`/${collection}/${entry.id}/`}
+          data-keep-filter
+          aria-current={currentId === entry.id ? "page" : undefined}
+        >
+          <p class="gh-meta gh-collection-meta">
+            {entry.data.date.getFullYear()} · {metaSecondary(entry)}
+          </p>
+          <h3 class="gh-collection-title">{entry.data.title}</h3>
+          {variant === "listing" && (
+            <p class="gh-collection-desc">{entry.data.description}</p>
+          )}
+          {variant === "listing" && entry.data.tags.length > 0 && (
+            <div class="gh-collection-tags">
+              {entry.data.tags.map((t) => (
+                <span class="gh-pill">{t}</span>
+              ))}
+            </div>
+          )}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<p class="gh-collection-empty" data-tag-filter-empty hidden>
+  No entries match the active filter.
+</p>

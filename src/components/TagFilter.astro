@@ -1,0 +1,40 @@
+---
+import { normalizeTag } from "@lib/tagFilter";
+
+interface Props {
+  tags: string[];
+  variant?: "listing" | "sidebar";
+}
+
+const { tags, variant = "listing" } = Astro.props;
+---
+
+<div
+  class:list={["gh-chip-row", `gh-chip-row-${variant}`]}
+  data-tag-filter-chips
+>
+  {
+    tags.map((t) => (
+      <button
+        type="button"
+        class="gh-chip"
+        data-tag={normalizeTag(t)}
+        aria-pressed="false"
+      >
+        {t}
+      </button>
+    ))
+  }
+  <button
+    type="button"
+    class="gh-chip-clear"
+    data-tag-filter-clear
+    aria-label="Clear filter"
+  >
+    Clear
+  </button>
+</div>
+
+<script>
+  import "@scripts/tag-filter.ts";
+</script>

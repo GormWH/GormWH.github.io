@@ -197,7 +197,7 @@ a { color: inherit; text-decoration: none; }
   z-index: 50;
   display: flex;
   align-items: center;
-  height: 56px;
+  height: var(--height-header);
   padding-inline: var(--space-32);
   /* Solid baseline for browsers without CSS Relative Color Syntax (Safari <16.4). */
   background: var(--color-bg-overlay);
@@ -305,7 +305,9 @@ a { color: inherit; text-decoration: none; }
   max-width: var(--container-reading);
   margin-inline: auto;
   padding-block: var(--space-64);
-  padding-inline: var(--space-32);
+  /* Outer horizontal padding lives on `.gh-article-shell` so the article
+     fills its grid cell; without rails, the shell still pads the viewport. */
+  min-width: 0;
 }
 
 .gh-article-head {
@@ -395,30 +397,15 @@ a { color: inherit; text-decoration: none; }
 
 /* `:where()` keeps these at specificity (0,0,1) so any `gh-*` class
    used inside markdown bodies overrides automatically. */
-.gh-prose {
-  counter-reset: gh-prose-h2;
-}
 .gh-prose :where(h2) {
   font-family: var(--font-headline);
   font-size: var(--text-28);
   line-height: 1.2;
   font-weight: 500;
   color: var(--color-ink-1);
-  counter-increment: gh-prose-h2;
   margin: var(--space-48) 0 var(--space-12);
   padding-top: var(--space-32);
   border-top: 1px solid var(--color-rule);
-}
-.gh-prose :where(h2)::before {
-  content: "※ " counter(gh-prose-h2, decimal-leading-zero) " — ";
-  font-family: var(--font-mono);
-  font-size: 0.55em;
-  letter-spacing: var(--tracking-meta);
-  text-transform: uppercase;
-  color: var(--color-ink-3);
-  vertical-align: 0.25em;
-  margin-right: var(--space-4);
-  font-weight: 400;
 }
 .gh-prose :where(h3) {
   font-family: var(--font-headline);
@@ -478,3 +465,282 @@ a { color: inherit; text-decoration: none; }
 }
 .gh-prose :where(strong) { font-weight: 600; color: var(--color-ink-1); }
 .gh-prose :where(img) { max-width: 100%; height: auto; border-radius: var(--radius-1); }
+
+/* ============================================================
+   Article shell — 3-column layout for /work/[slug] & /writing/[slug]
+
+   Breakpoints:
+     <1024px : single column (rails hidden)
+     1024-1279px : article + right TOC (left sidebar hidden)
+     >=1280px : left sidebar + article + right TOC (when both present)
+
+   Rail visibility is driven by media queries, not by JS, so the cells
+   stay in the DOM and the sticky positioning still computes when the
+   viewport grows.
+   ============================================================ */
+
+.gh-article-shell {
+  max-width: var(--container-page);
+  margin-inline: auto;
+  padding-inline: var(--space-32);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-40);
+}
+
+@media (min-width: 1024px) {
+  .gh-article-shell-with-right {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 220px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .gh-article-shell-with-left.gh-article-shell-with-right {
+    grid-template-columns: minmax(0, 220px) minmax(0, 1fr) minmax(0, 220px);
+  }
+  .gh-article-shell-with-left:not(.gh-article-shell-with-right) {
+    grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1279px) {
+  .gh-article-rail-left { display: none; }
+}
+
+@media (max-width: 1023px) {
+  .gh-article-rail-right { display: none; }
+}
+
+.gh-article-rail {
+  position: sticky;
+  top: calc(var(--height-header) + var(--space-24));
+  align-self: start;
+  max-height: calc(100vh - var(--height-header) - var(--space-24));
+  overflow-y: auto;
+  padding-block: var(--space-64);
+  font-size: var(--text-14);
+}
+
+/* ============================================================
+   Tag chips — interactive filter UI, used in listings and sidebar
+   ============================================================ */
+
+.gh-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-22);
+}
+
+.gh-chip-row-listing {
+  margin-bottom: var(--space-32);
+}
+
+.gh-chip {
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  padding: 4px 10px;
+  border: 1px solid var(--color-rule);
+  border-radius: 999px;
+  color: var(--color-ink-2);
+  background: transparent;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-mech),
+    color var(--duration-fast) var(--ease-mech),
+    border-color var(--duration-fast) var(--ease-mech);
+}
+
+.gh-chip:hover {
+  border-color: var(--color-ink-1);
+  color: var(--color-ink-1);
+}
+
+.gh-chip[aria-pressed="true"] {
+  background: var(--color-ink-1);
+  border-color: var(--color-ink-1);
+  color: var(--color-bg);
+}
+
+.gh-chip-clear {
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  padding: 4px 10px;
+  background: transparent;
+  border: 0;
+  color: var(--color-ink-3);
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-mech);
+}
+
+.gh-chip-clear:hover {
+  color: var(--color-ink-1);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+   Collection list — same component drives /work, /writing listing
+   AND the left-rail sidebar. Variant classes pick the visual scale.
+   ============================================================ */
+
+.gh-collection-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.gh-collection-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Listing variant — bordered rows, full type scale */
+
+.gh-collection-list-listing {
+  border-top: 1px solid var(--color-rule);
+}
+
+.gh-collection-list-listing .gh-collection-item {
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.gh-collection-list-listing .gh-collection-link {
+  padding: var(--space-22) 0;
+  transition: background var(--duration-fast) var(--ease-mech);
+}
+
+.gh-collection-list-listing .gh-collection-link:hover {
+  background: var(--color-bg-2);
+}
+
+.gh-collection-list-listing .gh-collection-meta {
+  margin-bottom: var(--space-8);
+}
+
+.gh-collection-list-listing .gh-collection-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-22);
+  line-height: 1.2;
+  font-weight: 500;
+  margin: 0 0 var(--space-6);
+  color: var(--color-ink-1);
+}
+
+.gh-collection-list-listing .gh-collection-desc {
+  font-size: var(--text-15);
+  line-height: 1.6;
+  color: var(--color-ink-2);
+  margin: 0 0 var(--space-10);
+}
+
+.gh-collection-list-listing .gh-collection-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+/* Sidebar variant — tighter, no row borders, current entry accented */
+
+.gh-collection-list-sidebar {
+  border-top: 1px solid var(--color-rule);
+  padding-top: var(--space-8);
+}
+
+.gh-collection-list-sidebar .gh-collection-link {
+  padding: var(--space-10) 0;
+  color: var(--color-ink-2);
+  transition: color var(--duration-fast) var(--ease-mech);
+}
+
+.gh-collection-list-sidebar .gh-collection-link:hover {
+  color: var(--color-ink-1);
+}
+
+.gh-collection-list-sidebar .gh-collection-meta {
+  margin: 0;
+}
+
+.gh-collection-list-sidebar .gh-collection-title {
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  line-height: 1.35;
+  font-weight: 500;
+  margin: var(--space-4) 0 0;
+  color: inherit;
+}
+
+.gh-collection-item-current .gh-collection-link {
+  color: var(--color-accent-ink);
+}
+
+.gh-collection-item-current .gh-collection-title {
+  color: var(--color-accent-ink);
+  font-weight: 600;
+}
+
+.gh-collection-empty {
+  font-size: var(--text-14);
+  color: var(--color-ink-3);
+  padding: var(--space-22) 0;
+  margin: 0;
+}
+
+/* ============================================================
+   Sidebar wrapper — composed TagFilter + CollectionList
+   ============================================================ */
+
+.gh-aside-collection {
+  display: block;
+}
+
+.gh-aside-label {
+  margin-bottom: var(--space-14);
+}
+
+/* ============================================================
+   Article TOC (right rail)
+   ============================================================ */
+
+.gh-toc {
+  display: block;
+}
+
+.gh-toc-label {
+  margin-bottom: var(--space-14);
+}
+
+.gh-toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid var(--color-rule);
+}
+
+.gh-toc-link {
+  display: block;
+  padding: var(--space-6) var(--space-14);
+  font-size: var(--text-14);
+  line-height: 1.4;
+  color: var(--color-ink-2);
+  margin-left: -1px;
+  border-left: 1px solid transparent;
+  transition:
+    color var(--duration-fast) var(--ease-mech),
+    border-color var(--duration-fast) var(--ease-mech);
+}
+
+.gh-toc-link:hover {
+  color: var(--color-ink-1);
+  border-left-color: var(--color-ink-1);
+}
+
+.gh-toc-item-sub .gh-toc-link {
+  padding-left: var(--space-24);
+  font-size: var(--text-13);
+  color: var(--color-ink-3);
+}
