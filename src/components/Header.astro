@@ -8,7 +8,11 @@ const navItems = [
 ];
 const isActive = (href: string) => {
   if (href.startsWith("/#")) return pathname === "/";
-  return pathname === href.replace(/\/$/, "");
+  const base = href.replace(/\/$/, "");
+  // pathname is pre-normalized at line 2 (no trailing slash). The startsWith branch
+  // makes section-parent links match sub-routes (e.g. /work/<slug>); do NOT collapse
+  // back to exact-match.
+  return pathname === base || pathname.startsWith(base + "/");
 };
 ---
 
@@ -16,7 +20,7 @@ const isActive = (href: string) => {
   <a href="/" class="font-headline text-22 text-ink-1">
     Gorm<span class="text-accent">.</span>
   </a>
-  <nav class="ml-auto flex items-center gap-7 font-body text-sm text-ink-1">
+  <nav class="gh-nav ml-auto font-body text-sm text-ink-1" aria-label="Primary">
     {
       navItems.map((item) => (
         <a

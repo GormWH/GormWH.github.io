@@ -205,6 +205,7 @@ a { color: inherit; text-decoration: none; }
      Alpha intentionally diverges from --color-bg-overlay (0.7 vs 0.78) — the upgraded layer is
      slightly more opaque so the blur stays legible over scrolled content. */
   background: rgb(from var(--color-bg) r g b / 0.78);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--color-rule);
 }
@@ -238,6 +239,26 @@ a { color: inherit; text-decoration: none; }
   height: 5px;
   border-radius: 50%;
   background: var(--color-accent);
+}
+
+.gh-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-28);
+}
+
+@media (max-width: 760px) {
+  .gh-header { padding-inline: var(--space-16); }
+  .gh-nav { gap: var(--space-16); }
+  /* Explicit AC2 floor: padding+line-height yields ~46.4px today;
+     lock the floor in case --text-14 or line-height ever shrinks. */
+  .gh-link {
+    display: inline-flex;
+    align-items: center;
+    padding-block: var(--space-12);
+    padding-inline: var(--space-6);
+    min-height: 40px;
+  }
 }
 
 /* ============================================================
