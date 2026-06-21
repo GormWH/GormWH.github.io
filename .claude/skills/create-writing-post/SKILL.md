@@ -105,4 +105,3 @@ Substitute the actual slug. Do **not** run `pnpm build` from inside the skill â€
 - Does not modify `src/content.config.ts`. If a new `kind` value is needed, ask the user to update the Zod enum first.
 - Does not edit `src/pages/writing/*` â€” those routes already enumerate the collection.
 - Does not run `pnpm build`, `pnpm dev`, or `pnpm check`.
-- Does not invent `tags` the user didn't ask for. Tag taxonomy is the user's call.
