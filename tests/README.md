@@ -1,6 +1,6 @@
 # tests
 
-Vitest unit + integration suite, plus a deferred Playwright e2e scaffold.
+Vitest unit + integration suite, plus a Playwright e2e suite.
 
 ## Layout
 
@@ -11,15 +11,17 @@ Vitest unit + integration suite, plus a deferred Playwright e2e scaffold.
 - `integration/` — tests that cross module boundaries (e.g. multiple `src/lib`
   helpers composed together, or a feature's data pipeline end to end) without
   going through a browser.
-- `e2e/` — Playwright scaffold only. See [`e2e/README.md`](e2e/README.md) —
-  not implemented yet, folders exist for future work.
+- `e2e/` — Playwright suite (`*.e2e.ts` specs) driving the built site through
+  a real browser. See [`e2e/README.md`](e2e/README.md) for config, personas,
+  and known gaps the suite surfaced.
 
 ## Running
 
 ```
-pnpm test          # vitest run — single pass, used in CI/pre-push
-pnpm test:watch    # vitest — watch mode for local development
-pnpm test:e2e      # placeholder — echoes a not-implemented message
+pnpm test              # vitest run — single pass, used in CI/pre-push
+pnpm test:watch        # vitest — watch mode for local development
+pnpm test:e2e          # rebuild + run the Playwright suite
+pnpm test:e2e:fast     # run the Playwright suite against the existing dist/
 ```
 
 ## Environment
@@ -42,5 +44,7 @@ config to maintain in the test runner.
 
 ## Scope note
 
-E2E is intentionally scaffold-only for now — see `e2e/README.md` for what's
-planned and why it's deferred.
+`*.e2e.ts` naming keeps the Playwright suite structurally isolated from
+Vitest — Vitest's default glob (`**/*.{test,spec}.*`) never collects them, so
+`pnpm test` stays fast and e2e stays opt-in via `pnpm test:e2e`. See
+`e2e/README.md` for config, personas, and known gaps the suite surfaced.

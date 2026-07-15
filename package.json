@@ -13,7 +13,8 @@
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "echo \"E2E not implemented — see tests/e2e/README.md\""
+    "test:e2e": "pnpm build && pnpm exec playwright test",
+    "test:e2e:fast": "pnpm exec playwright test"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.4",
@@ -31,6 +32,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/work-sans": "^5.2.8",
     "@fontsource/oswald": "^5.2.8",
+    "@playwright/test": "^1.49.1",
     "playwright": "^1.49.1",
     "typescript": "^6.0.3",
     "vitest": "^3.2.0"
