@@ -9,8 +9,10 @@ Package manager is **pnpm** (Node `>=22.12.0`). `pnpm-workspace.yaml` allowlists
 | `pnpm build` | Production build to `./dist/` |
 | `pnpm preview` | Serve `./dist/` locally |
 | `pnpm check` | Type-check `.astro` + TS via `astro check` |
+| `pnpm test` | Run Vitest unit + integration tests |
+| `pnpm test:watch` | Vitest in watch mode |
 
-There is **no test suite, no linter, and no formatter** wired up — don't invent commands for them.
+A Vitest unit + integration suite exists (see [`docs/testing.md`](testing.md)); E2E is scaffolded but not yet implemented. There is still **no linter and no formatter** wired up — don't invent commands for them.
 
 ## Gates
 
