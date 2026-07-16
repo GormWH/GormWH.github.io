@@ -7,6 +7,7 @@ Project knowledge base. Each file owns one subject so [`AGENTS.md`](../AGENTS.md
 | File | Subject | Maps to AGENTS.md |
 | --- | --- | --- |
 | [`commands.md`](commands.md) | pnpm commands, deploy gate | "Commands & gates" |
+| [`testing.md`](testing.md) | Vitest, structure, E2E deferral | "Testing (Vitest, structure, E2E deferral)" |
 | [`architecture.md`](architecture.md) | Stack, path aliases, feature-folder rule | "Stack, path aliases, feature-folder rule" |
 | [`styling.md`](styling.md) | Tailwind v4 tokens, `gh-*` / `hp-*` conventions | "Tailwind v4 tokens, `gh-*` / `hp-*` conventions" |
 | [`routing.md`](routing.md) | File-based routes, deploy target, deploy automation | "File-based routes & deploy target" |

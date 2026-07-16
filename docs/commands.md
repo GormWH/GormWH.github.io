@@ -9,8 +9,12 @@ Package manager is **pnpm** (Node `>=22.12.0`). `pnpm-workspace.yaml` allowlists
 | `pnpm build` | Production build to `./dist/` |
 | `pnpm preview` | Serve `./dist/` locally |
 | `pnpm check` | Type-check `.astro` + TS via `astro check` |
+| `pnpm test` | Run Vitest unit + integration tests |
+| `pnpm test:watch` | Vitest in watch mode |
+| `pnpm test:e2e` | Rebuild, then run the Playwright E2E suite |
+| `pnpm test:e2e:fast` | Run the Playwright E2E suite against the existing `dist/` |
 
-There is **no test suite, no linter, and no formatter** wired up — don't invent commands for them.
+A Vitest unit + integration suite and a Playwright E2E suite both exist (see [`docs/testing.md`](testing.md)). There is still **no linter and no formatter** wired up — don't invent commands for them.
 
 ## Gates
 

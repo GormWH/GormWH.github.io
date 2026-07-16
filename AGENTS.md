@@ -12,13 +12,14 @@ Astro 6 static site for a personal portfolio, deployed to GitHub Pages at `https
 
 - Package manager: **pnpm** (Node `>=22.12.0`).
 - Deploy gate: `pnpm build`. Run `pnpm check` before pushing.
-- No test suite, no linter, no formatter.
+- No linter, no formatter. A Vitest unit + integration suite exists.
 
 ## Where to look
 
 | Topic | File |
 | --- | --- |
 | Commands & gates | [`docs/commands.md`](docs/commands.md) |
+| Testing (Vitest, structure, E2E deferral) | [`docs/testing.md`](docs/testing.md) |
 | Stack, path aliases, feature-folder rule | [`docs/architecture.md`](docs/architecture.md) |
 | Tailwind v4 tokens, `gh-*` / `hp-*` conventions | [`docs/styling.md`](docs/styling.md) |
 | File-based routes & deploy target | [`docs/routing.md`](docs/routing.md) |
