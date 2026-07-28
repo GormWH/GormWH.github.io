@@ -11,17 +11,17 @@ test.describe('recruiter — landing', () => {
     await expect(page.locator('.gh-lead')).toContainText("I'm Gorm");
 
     const primaryCta = page.locator('a.gh-btn-primary');
-    await expect(primaryCta).toHaveAttribute('href', '/work/');
+    await expect(primaryCta).toHaveAttribute('href', '/en-us/work/');
     await expect(primaryCta).toContainText('Recent work');
     await primaryCta.click();
-    await expect(page).toHaveURL(/\/work\/?$/);
+    await expect(page).toHaveURL(/\/en-us\/work\/?$/);
 
     await page.goto(ROUTES.home);
     const ghostCta = page.locator('a.gh-btn-ghost');
-    await expect(ghostCta).toHaveAttribute('href', '/contact/');
+    await expect(ghostCta).toHaveAttribute('href', '/en-us/contact/');
     await expect(ghostCta).toContainText('Get in touch');
     await ghostCta.click();
-    await expect(page).toHaveURL(/\/contact\/?$/);
+    await expect(page).toHaveURL(/\/en-us\/contact\/?$/);
   });
 
   test('R2: timeline "Show more" reveals overflow roles', async ({ page }) => {
@@ -95,7 +95,7 @@ test.describe('recruiter — landing', () => {
       await expect(nav.getByRole('link', { name })).toHaveAttribute('aria-current', 'page');
     }
 
-    await page.locator('.gh-header a[href="/"]').click();
-    await expect(page).toHaveURL(/\/$/);
+    await page.locator('.gh-header a[href="/en-us/"]').click();
+    await expect(page).toHaveURL(/\/en-us\/$/);
   });
 });
