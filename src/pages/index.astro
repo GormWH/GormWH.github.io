@@ -1,23 +1,9 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import { buildPersonSchema, absoluteUrl, DEFAULT_OG_IMAGE } from "@lib/seo";
+import MetaRefresh from "@components/MetaRefresh.astro";
+import { DEFAULT_LOCALE, localizedPath } from "@lib/i18n";
+import { absoluteUrl } from "@lib/seo";
 
-import Hero from "@features/home/Hero.astro";
-import About from "@features/home/About.astro";
-import Work from "@features/home/Work.astro";
-import Writing from "@features/home/Writing.astro";
-import Contact from "@features/home/Contact.astro";
-
-const personJsonLd = buildPersonSchema({
-  url: Astro.site!.href,
-  image: absoluteUrl(DEFAULT_OG_IMAGE, Astro.site),
-});
+const target = absoluteUrl(localizedPath(DEFAULT_LOCALE), Astro.site);
 ---
 
-<BaseLayout title="Gorm — SuHong Park" seo={{ jsonLd: personJsonLd }}>
-  <Hero />
-  <About />
-  <Work />
-  <Writing />
-  <Contact />
-</BaseLayout>
+<MetaRefresh target={target} />

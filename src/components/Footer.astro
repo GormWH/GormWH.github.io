@@ -1,16 +1,45 @@
 ---
+import { DEFAULT_LOCALE, LOCALES, localizedPath } from "@lib/i18n";
+import { useTranslations } from "@lib/ui";
+
+interface Props {
+  /** Locale path token (e.g. 'en-us'). Defaults to DEFAULT_LOCALE for pages not yet locale-aware. */
+  locale?: string;
+  /** Per-locale-path href for the language switcher on this page (real entry or fallback URL). */
+  switcherHrefs?: Partial<Record<string, string>> | undefined;
+}
+
+const { locale = DEFAULT_LOCALE, switcherHrefs } = Astro.props;
+const t = useTranslations(locale.split('-')[0] ?? 'en');
 const currentYear = new Date().getFullYear();
 ---
 
 <footer class="gh-footer">
-  <a href="/" class="gh-footer-word">Gorm<span class="text-accent">.</span></a>
-  <span><span class="gh-symbol" aria-hidden="true">©</span><span class="sr-only">Copyright</span> {currentYear}</span>
+  <a href={localizedPath(locale)} class="gh-footer-word">Gorm<span class="text-accent">.</span></a>
+  <span><span class="gh-symbol" aria-hidden="true">©</span><span class="sr-only">{t('footer.copyright')}</span> {currentYear}</span>
   <span class="gh-symbol" aria-hidden="true">·</span>
-  <span>Osaka, Japan</span>
+  <span>{t('footer.location')}</span>
   <nav class="gh-footer-links" aria-label="Footer">
     <a class="gh-footer-link" href="https://github.com/GormWH" target="_blank" rel="noreferrer">GitHub</a>
     <a class="gh-footer-link" href="https://www.linkedin.com/in/su-hong-park-1aa107216/" target="_blank" rel="noreferrer">LinkedIn</a>
     <a class="gh-footer-link" href="/CV.pdf">CV</a>
     <a class="gh-footer-link" href="/licenses/">Type · OFL</a>
+  </nav>
+  <nav class="gh-lang-switcher" aria-label="Language">
+    {
+      LOCALES.map((l, i) => (
+        <>
+          {i > 0 && <span class="gh-symbol" aria-hidden="true">·</span>}
+          <a
+            class="gh-footer-link"
+            href={switcherHrefs?.[l.path] ?? localizedPath(l.path)}
+            lang={l.htmlLang}
+            aria-current={l.path === locale ? "true" : undefined}
+          >
+            {l.label}
+          </a>
+        </>
+      ))
+    }
   </nav>
 </footer>

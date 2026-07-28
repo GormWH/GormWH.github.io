@@ -9,30 +9,48 @@ import {
   absoluteUrl,
   serializeJsonLd,
   SITE_NAME,
-  SITE_LOCALE,
   DEFAULT_OG_IMAGE,
   DEFAULT_DESCRIPTION,
   TWITTER_CARD,
 } from "@lib/seo";
+import { DEFAULT_LOCALE, getLocaleInfo, localeByPath } from "@lib/i18n";
+import type { HreflangAlternate } from "@lib/i18n";
 
 interface Props {
   title?: string;
   description?: string;
   seo?: SeoProps;
+  /** Locale path token (e.g. 'en-us'). Defaults to DEFAULT_LOCALE for pages not yet locale-aware. */
+  locale?: string;
+  /** hreflang alternates, e.g. the output of i18n.ts's hreflangAlternates(). Defaults to none. */
+  alternates?: HreflangAlternate[];
+  /** Canonical override; falls back to seo.canonical, then the current URL. */
+  canonical?: string | undefined;
+  /** Per-locale-path href for the Header language switcher on this page (real entry or fallback URL). */
+  switcherHrefs?: Partial<Record<string, string>> | undefined;
 }
 
-const { title, description, seo } = Astro.props;
+const {
+  title,
+  description,
+  seo,
+  locale = DEFAULT_LOCALE,
+  alternates = [],
+  canonical,
+  switcherHrefs,
+} = Astro.props;
 
 const effectiveTitle = seo?.title ?? title ?? SITE_NAME;
 const effectiveDescription = seo?.description ?? description ?? DEFAULT_DESCRIPTION;
-const canonical = seo?.canonical ?? absoluteUrl(Astro.url.pathname, Astro.site);
+const effectiveCanonical = seo?.canonical ?? canonical ?? absoluteUrl(Astro.url.pathname, Astro.site);
 const ogType = seo?.ogType ?? 'website';
 const ogImageAbs = absoluteUrl(seo?.ogImage ?? DEFAULT_OG_IMAGE, Astro.site);
 const { publishedTime, modifiedTime, tags } = seo ?? {};
+const localeInfo = getLocaleInfo(locale) ?? localeByPath[DEFAULT_LOCALE];
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={localeInfo.htmlLang}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -41,17 +59,18 @@ const { publishedTime, modifiedTime, tags } = seo ?? {};
     <meta name="description" content={effectiveDescription} />
     <title>{effectiveTitle}</title>
 
-    <link rel="canonical" href={canonical} />
+    <link rel="canonical" href={effectiveCanonical} />
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#F6F5F0" />
 
     <meta property="og:title" content={effectiveTitle} />
     <meta property="og:description" content={effectiveDescription} />
     <meta property="og:type" content={ogType} />
-    <meta property="og:url" content={canonical} />
+    <meta property="og:url" content={effectiveCanonical} />
     <meta property="og:image" content={ogImageAbs} />
     <meta property="og:site_name" content={SITE_NAME} />
-    <meta property="og:locale" content={SITE_LOCALE} />
+    <meta property="og:locale" content={localeInfo.ogLocale} />
 
     <meta name="twitter:card" content={TWITTER_CARD} />
     <meta name="twitter:title" content={effectiveTitle} />
@@ -69,10 +88,10 @@ const { publishedTime, modifiedTime, tags } = seo ?? {};
   </head>
   <body>
     <a href="#main-content" class="gh-skip-link">Skip to content</a>
-    <Header />
+    <Header locale={locale} switcherHrefs={switcherHrefs} />
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
-    <Footer />
+    <Footer locale={locale} switcherHrefs={switcherHrefs} />
   </body>
 </html>

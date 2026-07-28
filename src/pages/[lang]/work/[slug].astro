@@ -1,0 +1,152 @@
+---
+import MarkdownLayout from "@layouts/MarkdownLayout.astro";
+import ArticleHeader from "@components/ArticleHeader.astro";
+import ArticlePager from "@components/ArticlePager.astro";
+import CollectionSidebar from "@components/CollectionSidebar.astro";
+import CollectionToc from "@components/CollectionToc.astro";
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import { buildArticleSchema, absoluteUrl, DEFAULT_OG_IMAGE } from "@lib/seo";
+import {
+  LOCALE_PATHS,
+  localizedPath,
+  distinctSlugs,
+  resolveEntry,
+  hreflangAlternates,
+} from "@lib/i18n";
+import type { ResolvedEntry } from "@lib/i18n";
+
+interface SlugResolved {
+  slug: string;
+  resolved: ResolvedEntry<CollectionEntry<"work">>;
+}
+
+interface Props {
+  resolved: ResolvedEntry<CollectionEntry<"work">>;
+  slug: string;
+  next: SlugResolved | null;
+  sidebarEntries: CollectionEntry<"work">[];
+  rawEntries: CollectionEntry<"work">[];
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  // Nested (not a sibling top-level declaration): Astro's build extracts a
+  // minimal chunk to run getStaticPaths ahead of the render path, and a
+  // helper defined outside this closure was observed being tree-shaken away
+  // ("compareWork is not defined" at build time) even though it's called
+  // from inside here — keep helpers self-contained in the closure instead.
+  function compareWork(a: CollectionEntry<"work">, b: CollectionEntry<"work">) {
+    const imp = Number(b.data.important) - Number(a.data.important);
+    if (imp !== 0) return imp;
+    const dateDiff = b.data.date.getTime() - a.data.date.getTime();
+    if (dateDiff !== 0) return dateDiff;
+    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+  }
+
+  const rawEntries = await getCollection("work", ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true,
+  );
+  const slugs = distinctSlugs(rawEntries);
+
+  return LOCALE_PATHS.flatMap((lang) => {
+    const resolvedList: SlugResolved[] = slugs
+      .map((slug) => ({ slug, resolved: resolveEntry(rawEntries, slug, lang) }))
+      .filter((r): r is SlugResolved => r.resolved !== null)
+      .sort((a, b) => compareWork(a.resolved.entry, b.resolved.entry));
+
+    return resolvedList.map(({ slug, resolved }, idx) => ({
+      params: { lang, slug },
+      props: {
+        resolved,
+        slug,
+        next: resolvedList[idx + 1] ?? null,
+        sidebarEntries: resolvedList.map((r) => r.resolved.entry),
+        rawEntries,
+      },
+    }));
+  });
+};
+
+const { lang } = Astro.params as { lang: string };
+const { resolved, slug, next, sidebarEntries, rawEntries } = Astro.props;
+const { entry, isFallback, sourceLocalePath } = resolved;
+const { Content, headings } = await render(entry);
+
+const date = entry.data.date.toISOString().slice(0, 10);
+const stack = entry.data.tags.join(" · ");
+const metaGrid = [
+  { label: "Date", value: date },
+  { label: "Org", value: entry.data.org },
+  ...(stack ? [{ label: "Stack", value: stack }] : []),
+];
+
+const workJsonLd = buildArticleSchema({
+  url: absoluteUrl(localizedPath(lang, 'work', slug), Astro.site),
+  headline: entry.data.title,
+  description: entry.data.description,
+  datePublished: entry.data.date,
+  image: absoluteUrl(DEFAULT_OG_IMAGE, Astro.site),
+});
+
+// Every locale x slug combination is generated (fallback-rendered when no
+// translation exists), so the switcher can point straight at the same slug
+// under each locale without ever 404ing.
+const switcherHrefs = Object.fromEntries(
+  LOCALE_PATHS.map((l) => [l, localizedPath(l, 'work', slug)]),
+);
+
+// exactOptionalPropertyTypes: omit the `canonical` key entirely for real
+// entries rather than passing an explicit `undefined`.
+const canonicalProp = isFallback
+  ? { canonical: absoluteUrl(localizedPath(sourceLocalePath, 'work', slug), Astro.site) }
+  : {};
+const alternates = isFallback ? [] : hreflangAlternates('work', slug, rawEntries, Astro.site);
+---
+
+<MarkdownLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  locale={lang}
+  isFallback={isFallback}
+  alternates={alternates}
+  switcherHrefs={switcherHrefs}
+  {...canonicalProp}
+  seo={{
+    articleType: 'Article',
+    jsonLd: workJsonLd,
+    publishedTime: entry.data.date.toISOString(),
+    tags: entry.data.tags,
+  }}
+>
+  <CollectionSidebar
+    slot="left"
+    entries={sidebarEntries}
+    collection="work"
+    currentEntry={entry}
+    locale={lang}
+  />
+  <CollectionToc slot="right" headings={headings} />
+
+  <ArticleHeader
+    back={{ href: localizedPath(lang, 'work'), label: "all work" }}
+    metaLeft={date}
+    metaRight={entry.data.org}
+    title={entry.data.title}
+    lead={entry.data.description}
+    metaGrid={metaGrid}
+  />
+  <div class="gh-prose">
+    <Content />
+  </div>
+  {
+    next && (
+      <ArticlePager
+        next={{
+          href: localizedPath(lang, 'work', next.slug),
+          title: next.resolved.entry.data.title,
+        }}
+      />
+    )
+  }
+</MarkdownLayout>

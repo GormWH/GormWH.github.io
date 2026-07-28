@@ -1,5 +1,14 @@
 ---
+import { DEFAULT_LOCALE, localizedPath } from "@lib/i18n";
+import { useTranslations, type UiKey } from "@lib/ui";
 
+interface Props {
+  locale?: string;
+  t?: (key: UiKey) => string;
+}
+
+const { locale = DEFAULT_LOCALE, t: tProp } = Astro.props;
+const t = tProp ?? useTranslations(locale.split('-')[0] ?? 'en');
 ---
 
 <section id="home-hero" class="hp-hero mx-auto max-w-page px-6 sm:px-8">
@@ -12,24 +21,24 @@
       could meet. Now I customize AI tools for use across both worlds.
     </p>
     <div class="mt-9 flex gap-3">
-      <a class="gh-btn gh-btn-primary" href="/work/">
-        Recent work <span aria-hidden="true">→</span>
+      <a class="gh-btn gh-btn-primary" href={localizedPath(locale, 'work')}>
+        {t('home.hero.ctaWork')} <span aria-hidden="true">→</span>
       </a>
-      <a class="gh-btn gh-btn-ghost" href="/contact/">Get in touch</a>
+      <a class="gh-btn gh-btn-ghost" href={localizedPath(locale, 'contact')}>{t('home.hero.ctaContact')}</a>
     </div>
   </div>
 
   <div class="hp-hero-meta">
     <div>
-      <p class="gh-meta">Based in</p>
+      <p class="gh-meta">{t('home.hero.basedIn')}</p>
       <h2 class="hp-meta-val">Osaka, Japan</h2>
     </div>
     <div>
-      <p class="gh-meta">Languages</p>
+      <p class="gh-meta">{t('home.hero.languages')}</p>
       <h2 class="hp-meta-val">한국어 · 日本語 · English</h2>
     </div>
     <div>
-      <p class="gh-meta">Now</p>
+      <p class="gh-meta">{t('home.hero.now')}</p>
       <h2 class="hp-meta-val">株式会社bitset</h2>
     </div>
   </div>

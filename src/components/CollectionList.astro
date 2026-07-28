@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { entryTagsAttr } from "@lib/tagFilter";
+import { DEFAULT_LOCALE, localizedPath, getSlugFromId } from "@lib/i18n";
 
 type AnyEntry =
   | CollectionEntry<"work">
@@ -10,10 +11,12 @@ interface Props {
   entries: AnyEntry[];
   collection: "work" | "writing";
   variant: "listing" | "sidebar";
+  /** Current page's locale path — links stay under this locale even for fallback-rendered entries. */
+  locale?: string;
   currentId?: string;
 }
 
-const { entries, collection, variant, currentId } = Astro.props;
+const { entries, collection, variant, locale = DEFAULT_LOCALE, currentId } = Astro.props;
 
 function metaSecondary(e: AnyEntry): string {
   if (e.collection === "work") return e.data.org;
@@ -36,7 +39,7 @@ function metaSecondary(e: AnyEntry): string {
       >
         <a
           class="gh-collection-link"
-          href={`/${collection}/${entry.id}/`}
+          href={localizedPath(locale, collection, getSlugFromId(entry.id))}
           data-keep-filter
           aria-current={currentId === entry.id ? "page" : undefined}
         >

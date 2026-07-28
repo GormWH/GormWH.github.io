@@ -1,14 +1,24 @@
 ---
 import { channels } from "../../data/contact-channels";
 // Channel set is shared with /contact/ (src/data/contact-channels.ts); presentation diverges by design — see .omc/improvements/01-fix-dead-links-and-ctas.md.
+import { DEFAULT_LOCALE } from "@lib/i18n";
+import { useTranslations, type UiKey } from "@lib/ui";
+
+interface Props {
+  locale?: string;
+  t?: (key: UiKey) => string;
+}
+
+const { locale = DEFAULT_LOCALE, t: tProp } = Astro.props;
+const t = tProp ?? useTranslations(locale.split('-')[0] ?? 'en');
 ---
 
 <section id="home-contact" class="gh-section mx-auto max-w-page px-6 sm:px-8">
   <header class="gh-section-head">
     <div>
-      <p class="gh-meta">04 — Contact</p>
+      <p class="gh-meta">{t('home.contact.eyebrow')}</p>
       <h2 class="gh-section-title">
-        If it's worth doing,<br />I'd like to hear about it.
+        {t('home.contact.heading')}
       </h2>
     </div>
   </header>

@@ -1,47 +1,9 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import TagFilter from "@components/TagFilter.astro";
-import CollectionList from "@components/CollectionList.astro";
-import { getCollection } from "astro:content";
-import { collectTags } from "@lib/tagFilter";
+import MetaRefresh from "@components/MetaRefresh.astro";
+import { DEFAULT_LOCALE, localizedPath } from "@lib/i18n";
+import { absoluteUrl } from "@lib/seo";
 
-const writings = (
-  await getCollection("writing", ({ data }) =>
-    import.meta.env.PROD ? !data.draft : true,
-  )
-).sort((a, b) => {
-  const imp = Number(b.data.important) - Number(a.data.important);
-  if (imp !== 0) return imp;
-  const t = b.data.date.getTime() - a.data.date.getTime();
-  if (t !== 0) return t;
-  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-});
-
-const tags = collectTags(writings);
+const target = absoluteUrl(localizedPath(DEFAULT_LOCALE, 'writing'), Astro.site);
 ---
 
-<BaseLayout>
-  <section class="mx-auto max-w-page px-6 sm:px-8 py-16">
-    <header class="mb-10">
-      <p class="gh-meta">
-        Writing · <span data-tag-filter-count>{writings.length}</span>
-      </p>
-      <h1 class="gh-section-title">All writing</h1>
-    </header>
-
-    {
-      writings.length === 0 ? (
-        <p>No writing yet.</p>
-      ) : (
-        <div data-tag-filter-root data-collection="writing">
-          <TagFilter tags={tags} variant="listing" />
-          <CollectionList
-            entries={writings}
-            collection="writing"
-            variant="listing"
-          />
-        </div>
-      )
-    }
-  </section>
-</BaseLayout>
+<MetaRefresh target={target} />

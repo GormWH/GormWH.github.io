@@ -1,13 +1,32 @@
 ---
+import { DEFAULT_LOCALE, LOCALES, localizedPath } from "@lib/i18n";
+import { useTranslations } from "@lib/ui";
+
+interface Props {
+  /** Locale path token (e.g. 'en-us'). Defaults to DEFAULT_LOCALE for pages not yet locale-aware. */
+  locale?: string;
+  /**
+   * Per-locale-path href for the language switcher on THIS page (real entry
+   * or fallback URL for the current article/listing). Locales without an
+   * entry here fall back to that locale's homepage — the only href that's
+   * always safe to link to.
+   */
+  switcherHrefs?: Partial<Record<string, string>> | undefined;
+}
+
+const { locale = DEFAULT_LOCALE, switcherHrefs } = Astro.props;
+const t = useTranslations(locale.split('-')[0] ?? 'en');
+const home = localizedPath(locale);
+
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 const navItems = [
-  { label: "About", href: "/#home-about" },
-  { label: "Work", href: "/work" },
-  { label: "Writing", href: "/writing" },
-  { label: "Contact", href: "/contact" },
+  { label: t('nav.about'), href: `${home}#home-about` },
+  { label: t('nav.work'), href: localizedPath(locale, 'work') },
+  { label: t('nav.writing'), href: localizedPath(locale, 'writing') },
+  { label: t('nav.contact'), href: localizedPath(locale, 'contact') },
 ];
 const isActive = (href: string) => {
-  if (href.startsWith("/#")) return pathname === "/";
+  if (href.includes("#")) return pathname === home.replace(/\/$/, "");
   const base = href.replace(/\/$/, "");
   // pathname is pre-normalized at line 2 (no trailing slash). The startsWith branch
   // makes section-parent links match sub-routes (e.g. /work/<slug>); do NOT collapse
@@ -17,7 +36,7 @@ const isActive = (href: string) => {
 ---
 
 <header class="gh-header">
-  <a href="/" class="font-headline text-22 text-ink-1">
+  <a href={home} class="font-headline text-22 text-ink-1">
     Gorm<span class="text-accent">.</span>
   </a>
   <nav class="gh-nav ml-auto font-body text-sm text-ink-1" aria-label="Primary">
@@ -32,5 +51,22 @@ const isActive = (href: string) => {
         </a>
       ))
     }
+    <span class="gh-lang-switcher" aria-label="Language">
+      {
+        LOCALES.map((l, i) => (
+          <>
+            {i > 0 && <span class="gh-symbol" aria-hidden="true">·</span>}
+            <a
+              href={switcherHrefs?.[l.path] ?? localizedPath(l.path)}
+              class="gh-link"
+              lang={l.htmlLang}
+              aria-current={l.path === locale ? "true" : undefined}
+            >
+              {l.label}
+            </a>
+          </>
+        ))
+      }
+    </span>
   </nav>
 </header>
