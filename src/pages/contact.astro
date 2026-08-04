@@ -1,9 +1,8 @@
 ---
 import MetaRefresh from "@components/MetaRefresh.astro";
 import { DEFAULT_LOCALE, localizedPath } from "@lib/i18n";
-import { absoluteUrl } from "@lib/seo";
 
-const target = absoluteUrl(localizedPath(DEFAULT_LOCALE, 'contact'), Astro.site);
+const path = localizedPath(DEFAULT_LOCALE, 'contact');
 ---
 
-<MetaRefresh target={target} />
+<MetaRefresh path={path} />

@@ -15,28 +15,56 @@ const ALL_LEGACY_ROUTES: string[] = [
   ...LEGACY_ROUTES.writingSlugs,
 ];
 
-// The stub's meta-refresh/canonical target is always the site's real,
-// absolute production origin (baked in at build time from astro.config's
-// `site`), never the preview server's localhost origin — so these checks
-// read the stub's HTML directly via `request` rather than letting a real
-// browser follow the meta-refresh off-site.
+// The stub's canonical target is always the site's real, absolute
+// production origin (baked in at build time from astro.config's `site`);
+// the meta-refresh/anchor navigation itself is site-relative and
+// origin-agnostic (works on dev, preview, and production alike).
 const SITE_ORIGIN = 'https://gormwh.github.io';
 
 test.describe('i18n — legacy redirect stubs', () => {
-  test('I1: all 11 legacy URLs exist and meta-refresh + canonical to their /en-us/... target', async ({
+  test('I1: all 11 legacy URLs navigate relative to their /en-us/... target and canonical stays absolute', async ({
+    page,
     request,
   }) => {
     expect(ALL_LEGACY_ROUTES).toHaveLength(11);
 
     for (const legacyPath of ALL_LEGACY_ROUTES) {
-      const target = `${SITE_ORIGIN}/en-us${legacyPath}`;
+      const expectedTarget = `/en-us${legacyPath}`;
+
+      // T1: real navigation — follow the meta-refresh with an actual
+      // browser and assert it lands same-origin. Before the fix, the
+      // meta-refresh pointed at the absolute production origin, so this
+      // would try to cross-navigate off the current origin and 404/fail on
+      // any non-production origin.
+      const response = await page.goto(legacyPath);
+      const startOrigin = new URL(response!.url()).origin;
+      await page.waitForURL(`**${expectedTarget}`, { timeout: 5000 });
+      const landedUrl = new URL(page.url());
+      expect(landedUrl.origin, `${legacyPath} navigation stays same-origin`).toBe(startOrigin);
+      expect(landedUrl.pathname, `${legacyPath} lands on the relative target`).toBe(expectedTarget);
+
+      // Request-based assertions against the stub's raw HTML.
       const res = await request.get(legacyPath);
       expect(res.status(), `${legacyPath} should resolve 200`).toBe(200);
-
       const body = await res.text();
-      expect(body, `${legacyPath} meta-refresh target`).toContain(`content="0; url=${target}"`);
-      expect(body, `${legacyPath} canonical target`).toContain(`<link rel="canonical" href="${target}">`);
-      expect(body, `${legacyPath} visible fallback link`).toContain(`href="${target}"`);
+
+      // Positive: the meta-refresh target is site-relative — the exact
+      // form of the bug this suite regression-guards against.
+      expect(body, `${legacyPath} meta-refresh target is relative`).toContain(
+        `content="0; url=${landedUrl.pathname}"`,
+      );
+      expect(body, `${legacyPath} has no absolute meta-refresh target`).not.toContain('0; url=https://');
+      expect(body, `${legacyPath} visible fallback link`).toContain(`href="${landedUrl.pathname}"`);
+
+      // Canonical stays the absolute production URL (SEO signal, unchanged intent).
+      const canonicalMatch = body.match(/<link rel="canonical" href="([^"]*)">/);
+      expect(canonicalMatch, `${legacyPath} canonical link present`).not.toBeNull();
+
+      // T2: canonical and the real landing path must be byte-identical
+      // (same trailing-slash form) — they can never silently diverge.
+      expect(canonicalMatch![1], `${legacyPath} canonical matches the real landing path exactly`).toBe(
+        `${SITE_ORIGIN}${landedUrl.pathname}`,
+      );
     }
   });
 });

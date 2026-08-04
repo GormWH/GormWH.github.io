@@ -3,7 +3,6 @@ import MetaRefresh from "@components/MetaRefresh.astro";
 import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import { DEFAULT_LOCALE, getLocaleFromId, getSlugFromId, localizedPath } from "@lib/i18n";
-import { absoluteUrl } from "@lib/seo";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const entries = await getCollection("work", ({ data }) =>
@@ -18,7 +17,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const { slug } = Astro.params as { slug: string };
-const target = absoluteUrl(localizedPath(DEFAULT_LOCALE, 'work', slug), Astro.site);
+const path = localizedPath(DEFAULT_LOCALE, 'work', slug);
 ---
 
-<MetaRefresh target={target} />
+<MetaRefresh path={path} />
