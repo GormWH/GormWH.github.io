@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { collectTags, normalizeTag } from "@lib/tagFilter";
 import TagFilter from "@components/TagFilter.astro";
 import CollectionList from "@components/CollectionList.astro";
+import { DEFAULT_LOCALE } from "@lib/i18n";
 
 type AnyEntry =
   | CollectionEntry<"work">
@@ -12,9 +13,11 @@ interface Props {
   entries: AnyEntry[];
   collection: "work" | "writing";
   currentEntry: AnyEntry;
+  /** Current page's locale path, threaded straight to CollectionList. */
+  locale?: string;
 }
 
-const { entries, collection, currentEntry } = Astro.props;
+const { entries, collection, currentEntry, locale = DEFAULT_LOCALE } = Astro.props;
 const tags = collectTags(entries);
 const initialTags = currentEntry.data.tags
   .map(normalizeTag)
@@ -38,6 +41,7 @@ const collectionLabel = collection === "work" ? "Work" : "Writing";
     entries={entries}
     collection={collection}
     variant="sidebar"
+    locale={locale}
     currentId={currentEntry.id}
   />
 </aside>

@@ -59,7 +59,7 @@ test.describe('collaborator — work', () => {
   });
 
   test('C4: a case study renders its title and body', async ({ page }) => {
-    await page.goto('/work/osaka-thesis/');
+    await page.goto('/en-us/work/osaka-thesis/');
 
     await expect(page.locator('.gh-article-title')).toBeVisible();
     const firstParagraph = page.locator('.gh-prose p').first();

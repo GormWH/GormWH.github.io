@@ -1,39 +1,42 @@
 ---
 import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
+import { DEFAULT_LOCALE, localizedPath, getSlugFromId, resolveLocalizedList } from "@lib/i18n";
+import { compareEntryPriority } from "@lib/entryRank";
+import { useTranslations, type UiKey } from "@lib/ui";
 
-function compareWriting(
-  a: CollectionEntry<"writing">,
-  b: CollectionEntry<"writing">,
-) {
-  const imp = Number(b.data.important) - Number(a.data.important);
-  if (imp !== 0) return imp;
-  const t = b.data.date.getTime() - a.data.date.getTime();
-  if (t !== 0) return t;
-  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+interface Props {
+  locale?: string;
+  t?: (key: UiKey) => string;
 }
+
+const { locale = DEFAULT_LOCALE, t: tProp } = Astro.props;
+const t = tProp ?? useTranslations(locale);
 
 const all = await getCollection("writing", ({ data }) =>
   import.meta.env.PROD ? !data.draft : true,
 );
-const writings = all.sort(compareWriting).slice(0, 4);
+// See Work.astro — resolve to one entry per distinct slug for THIS locale
+// before ranking, so duplicate slugs from other locales never leak in.
+const writings = resolveLocalizedList(all, locale)
+  .map((r) => r.entry)
+  .sort(compareEntryPriority)
+  .slice(0, 4);
 ---
 
 <section id="home-writing" class="gh-section mx-auto max-w-page px-6 sm:px-8">
   <header class="gh-section-head">
     <div>
-      <p class="gh-meta">03 — Writing</p>
-      <h2 class="gh-section-title">Notes from the bench</h2>
+      <p class="gh-meta">{t('home.writing.eyebrow')}</p>
+      <h2 class="gh-section-title">{t('home.writing.heading')}</h2>
     </div>
-    <a class="gh-arrow" href="/writing">
-      <span class="gh-arrow-text">all writing</span>
+    <a class="gh-arrow" href={localizedPath(locale, 'writing')}>
+      <span class="gh-arrow-text">{t('home.writing.viewAll')}</span>
       <span class="glyph" aria-hidden="true">→</span>
     </a>
   </header>
 
   <p class="hp-writing-intro">
-    I write to think out loud — short notes from the work, longer essays when
-    something earns the airtime.
+    {t('home.writing.intro')}
   </p>
 
   <ol class="hp-writing-list">
@@ -42,7 +45,7 @@ const writings = all.sort(compareWriting).slice(0, 4);
         <li class="gh-meta-row hp-writing-row">
           <p class="hp-writing-year">{entry.data.date.getFullYear()}</p>
           <div class="hp-writing-body">
-            <a class="hp-writing-link" href={`/writing/${entry.id}/`}>
+            <a class="hp-writing-link" href={localizedPath(locale, 'writing', getSlugFromId(entry.id))}>
               <h3 class="hp-writing-title">{entry.data.title}</h3>
             </a>
             <p class="hp-writing-summary">{entry.data.description}</p>

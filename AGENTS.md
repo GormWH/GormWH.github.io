@@ -23,6 +23,7 @@ Astro 6 static site for a personal portfolio, deployed to GitHub Pages at `https
 | Stack, path aliases, feature-folder rule | [`docs/architecture.md`](docs/architecture.md) |
 | Tailwind v4 tokens, `gh-*` / `hp-*` conventions | [`docs/styling.md`](docs/styling.md) |
 | File-based routes & deploy target | [`docs/routing.md`](docs/routing.md) |
+| Internationalization (i18n) | [`docs/i18n.md`](docs/i18n.md) |
 | Copy voice, glyph allowlist, languages | [`docs/brand-voice.md`](docs/brand-voice.md) |
 | Commit message rules (no AI byline) | [`docs/commit-style.md`](docs/commit-style.md) |
 | `.claude/` allowlist & hooks | [`docs/claude-settings.md`](docs/claude-settings.md) |

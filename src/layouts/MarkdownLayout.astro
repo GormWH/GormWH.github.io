@@ -1,14 +1,35 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import type { SeoProps } from "@lib/seo";
+import { DEFAULT_LOCALE } from "@lib/i18n";
+import type { HreflangAlternate } from "@lib/i18n";
+import { useTranslations } from "@lib/ui";
 
 interface Props {
   title: string;
   description: string;
   seo?: SeoProps;
+  /** Locale path token (e.g. 'en-us'). Defaults to DEFAULT_LOCALE. */
+  locale?: string;
+  /** True when this page is rendering source-language content because no translation exists at `locale`. */
+  isFallback?: boolean;
+  /** Canonical override, threaded straight to BaseLayout. */
+  canonical?: string;
+  /** hreflang alternates, threaded straight to BaseLayout. */
+  alternates?: HreflangAlternate[];
+  /** Per-locale-path switcher hrefs (real entry or fallback URL), threaded straight to BaseLayout/Header. */
+  switcherHrefs?: Partial<Record<string, string>>;
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  locale = DEFAULT_LOCALE,
+  isFallback = false,
+  canonical,
+  alternates = [],
+  switcherHrefs,
+} = Astro.props;
 const mergedSeo: SeoProps = {
   description,
   ogType: 'article',
@@ -16,9 +37,18 @@ const mergedSeo: SeoProps = {
 };
 const hasLeft = Astro.slots.has("left");
 const hasRight = Astro.slots.has("right");
+const t = useTranslations(locale);
 ---
 
-<BaseLayout title={title} description={description} seo={mergedSeo}>
+<BaseLayout
+  title={title}
+  description={description}
+  seo={mergedSeo}
+  locale={locale}
+  canonical={canonical}
+  alternates={alternates}
+  switcherHrefs={switcherHrefs}
+>
   <div
     class:list={[
       "gh-article-shell",
@@ -34,6 +64,7 @@ const hasRight = Astro.slots.has("right");
       )
     }
     <article class="gh-article">
+      {isFallback && <p class="gh-fallback-notice" role="note">{t('fallbackNotice')}</p>}
       <slot />
     </article>
     {

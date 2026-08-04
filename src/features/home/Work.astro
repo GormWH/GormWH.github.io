@@ -1,29 +1,38 @@
 ---
 import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
+import { DEFAULT_LOCALE, localizedPath, getSlugFromId, resolveLocalizedList } from "@lib/i18n";
+import { compareEntryPriority } from "@lib/entryRank";
+import { useTranslations, type UiKey } from "@lib/ui";
 
-function compareWork(a: CollectionEntry<"work">, b: CollectionEntry<"work">) {
-  const imp = Number(b.data.important) - Number(a.data.important);
-  if (imp !== 0) return imp;
-  const t = b.data.date.getTime() - a.data.date.getTime();
-  if (t !== 0) return t;
-  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+interface Props {
+  locale?: string;
+  t?: (key: UiKey) => string;
 }
+
+const { locale = DEFAULT_LOCALE, t: tProp } = Astro.props;
+const t = tProp ?? useTranslations(locale);
 
 const all = await getCollection("work", ({ data }) =>
   import.meta.env.PROD ? !data.draft : true,
 );
-const works = all.sort(compareWork).slice(0, 4);
+// getCollection returns every locale's entries; resolve to one entry per
+// distinct slug for THIS locale (real translation or source fallback) before
+// ranking, so no slug is ever shown twice and no other locale's duplicate
+// entries leak into the homepage.
+const works = resolveLocalizedList(all, locale)
+  .map((r) => r.entry)
+  .sort(compareEntryPriority)
+  .slice(0, 4);
 ---
 
 <section id="home-work" class="gh-section mx-auto max-w-page px-6 sm:px-8">
   <header class="gh-section-head">
     <div>
-      <p class="gh-meta">02 — Work</p>
-      <h2 class="gh-section-title">Recent work</h2>
+      <p class="gh-meta">{t('home.work.eyebrow')}</p>
+      <h2 class="gh-section-title">{t('home.work.heading')}</h2>
     </div>
-    <a class="gh-arrow" href="/work/">
-      <span class="gh-arrow-text">all projects</span>
+    <a class="gh-arrow" href={localizedPath(locale, 'work')}>
+      <span class="gh-arrow-text">{t('home.work.viewAll')}</span>
       <span class="glyph" aria-hidden="true">→</span>
     </a>
   </header>
@@ -31,13 +40,13 @@ const works = all.sort(compareWork).slice(0, 4);
   <div class="hp-work-grid">
     {
       works.map((entry) => (
-        <a class="hp-work-card" href={`/work/${entry.id}/`}>
+        <a class="hp-work-card" href={localizedPath(locale, 'work', getSlugFromId(entry.id))}>
           <p class="gh-meta hp-work-meta">{entry.data.date.getFullYear()} · {entry.data.org}</p>
           <h3 class="hp-work-title">{entry.data.title}</h3>
           <p class="hp-work-desc">{entry.data.description}</p>
           <div class="hp-work-tags">
-            {entry.data.tags.map((t) => (
-              <span class="gh-pill">{t}</span>
+            {entry.data.tags.map((tag) => (
+              <span class="gh-pill">{tag}</span>
             ))}
           </div>
         </a>

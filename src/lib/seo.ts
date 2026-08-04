@@ -13,7 +13,6 @@ export interface SeoProps {
 
 export const SITE_NAME = 'Gorm.';
 export const AUTHOR = 'SuHong Park';
-export const SITE_LOCALE = 'en_US';
 export const DEFAULT_OG_IMAGE = '/og-default.png';
 export const DEFAULT_DESCRIPTION = 'SuHong Park — software, hardware, AI tooling.';
 export const TWITTER_CARD = 'summary_large_image';
@@ -47,6 +46,7 @@ export interface ArticleSchema {
   author: { '@type': 'Person'; name: string };
   image?: string;
   url: string;
+  inLanguage: string;
 }
 
 export interface BlogPostingSchema {
@@ -59,6 +59,7 @@ export interface BlogPostingSchema {
   author: { '@type': 'Person'; name: string };
   image?: string;
   url: string;
+  inLanguage: string;
 }
 
 export type JsonLdGraph = PersonSchema | ArticleSchema | BlogPostingSchema | JsonLdGraph[];
@@ -87,6 +88,7 @@ export function buildArticleSchema(opts: {
   datePublished: string | Date;
   dateModified?: string | Date;
   image?: string;
+  inLanguage?: string;
 }): ArticleSchema {
   return {
     '@context': 'https://schema.org',
@@ -98,6 +100,7 @@ export function buildArticleSchema(opts: {
     author: { '@type': 'Person', name: AUTHOR },
     ...(opts.image !== undefined ? { image: opts.image } : {}),
     url: opts.url,
+    inLanguage: opts.inLanguage ?? 'en',
   };
 }
 
@@ -108,6 +111,7 @@ export function buildBlogPostingSchema(opts: {
   datePublished: string | Date;
   dateModified?: string | Date;
   image?: string;
+  inLanguage?: string;
 }): BlogPostingSchema {
   return {
     '@context': 'https://schema.org',
@@ -119,6 +123,7 @@ export function buildBlogPostingSchema(opts: {
     author: { '@type': 'Person', name: AUTHOR },
     ...(opts.image !== undefined ? { image: opts.image } : {}),
     url: opts.url,
+    inLanguage: opts.inLanguage ?? 'en',
   };
 }
 

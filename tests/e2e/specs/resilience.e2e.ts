@@ -19,13 +19,17 @@ test.describe('resilience', () => {
 
     await expect(page.locator('h1')).toHaveText("This page isn't here.");
 
-    // Scope to the recovery list — the Header/Footer repeat these hrefs on
-    // every page and would otherwise collide (strict mode).
-    const recovery = page.locator('.gh-collection-list');
-    await expect(recovery.locator('a[href="/"]')).toBeVisible();
-    await expect(recovery.locator('a[href="/work/"]')).toBeVisible();
-    await expect(recovery.locator('a[href="/writing/"]')).toBeVisible();
-    await expect(recovery.locator('a[href="/contact/"]')).toBeVisible();
+    // Scope to the recovery lists — the Header/Footer repeat some of these
+    // hrefs on every page and would otherwise collide (strict mode).
+    const lists = page.locator('.gh-collection-list');
+    await expect(lists.locator('a[href="/en-us/"]').first()).toBeVisible();
+    await expect(lists.locator('a[href="/en-us/work/"]')).toBeVisible();
+    await expect(lists.locator('a[href="/en-us/writing/"]')).toBeVisible();
+    await expect(lists.locator('a[href="/en-us/contact/"]')).toBeVisible();
+
+    // The 404 page also links straight to each locale's homepage.
+    await expect(lists.locator('a[href="/ja-jp/"]')).toBeVisible();
+    await expect(lists.locator('a[href="/ko-kr/"]')).toBeVisible();
   });
 
   for (const path of [ROUTES.home, ROUTES.work, ROUTES.contact]) {
@@ -37,7 +41,7 @@ test.describe('resilience', () => {
     });
   }
 
-  for (const path of ['/', '/work/osaka-thesis/']) {
+  for (const path of ['/en-us/', '/en-us/work/osaka-thesis/']) {
     test(`X3: SEO basics present on ${path}`, async ({ page }) => {
       await page.goto(path);
 

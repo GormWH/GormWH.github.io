@@ -84,6 +84,25 @@ describe('buildArticleSchema', () => {
     });
     expect(result.datePublished).toBe('2024-03-01');
   });
+
+  it('defaults inLanguage to en when not given', () => {
+    const result = buildArticleSchema({
+      url: 'https://ex.com/a',
+      headline: 'Hello',
+      datePublished: '2024-03-01',
+    });
+    expect(result.inLanguage).toBe('en');
+  });
+
+  it('uses the given inLanguage when provided', () => {
+    const result = buildArticleSchema({
+      url: 'https://ex.com/a',
+      headline: 'Hello',
+      datePublished: '2024-03-01',
+      inLanguage: 'ja',
+    });
+    expect(result.inLanguage).toBe('ja');
+  });
 });
 
 describe('buildBlogPostingSchema', () => {
@@ -107,5 +126,22 @@ describe('buildBlogPostingSchema', () => {
     expect(result).not.toHaveProperty('description');
     expect(result).not.toHaveProperty('dateModified');
     expect(result).not.toHaveProperty('image');
+  });
+
+  it('defaults inLanguage to en, honoring an explicit override', () => {
+    const withDefault = buildBlogPostingSchema({
+      url: 'https://ex.com/a',
+      headline: 'Hello',
+      datePublished: '2024-03-01',
+    });
+    expect(withDefault.inLanguage).toBe('en');
+
+    const withOverride = buildBlogPostingSchema({
+      url: 'https://ex.com/a',
+      headline: 'Hello',
+      datePublished: '2024-03-01',
+      inLanguage: 'ko',
+    });
+    expect(withOverride.inLanguage).toBe('ko');
   });
 });

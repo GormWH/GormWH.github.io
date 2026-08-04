@@ -1,0 +1,38 @@
+---
+// Static meta-refresh redirect stub. GitHub Pages serves no server, so there
+// is no 301/302 available — meta-refresh + a canonical tag is the strongest
+// signal a fully static host can give. Dependency-free on purpose: these
+// pages replace routes that moved under a locale prefix and must keep
+// working even if the rest of the layout system changes shape.
+//
+// Invariant: navigation is relative (origin-agnostic — works on dev,
+// preview, and production alike); only the canonical tag is absolute (an
+// SEO signal that must always point at the real production URL).
+import { absoluteUrl } from "@lib/seo";
+
+interface Props {
+  /** Site-relative path of the new address, e.g. '/en-us/'. */
+  path: string;
+}
+
+const { path } = Astro.props;
+const abs = absoluteUrl(path, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${path}`} />
+    <link rel="canonical" href={abs} />
+    <meta name="viewport" content="width=device-width" />
+    <title>Redirecting — Gorm.</title>
+  </head>
+  <body>
+    <p>This page has moved.</p>
+    <p><a href={path}>Continuing to the new address →</a></p>
+    <noscript>
+      <p><a href={path}>Continuing to the new address →</a></p>
+    </noscript>
+  </body>
+</html>

@@ -1,4 +1,15 @@
 ---
+import { DEFAULT_LOCALE } from "@lib/i18n";
+import { useTranslations, type UiKey } from "@lib/ui";
+
+interface Props {
+  locale?: string;
+  t?: (key: UiKey) => string;
+}
+
+const { locale = DEFAULT_LOCALE, t: tProp } = Astro.props;
+const t = tProp ?? useTranslations(locale);
+
 const TIMELINE = [
   {
     years: "2026.06 - present",
@@ -34,8 +45,8 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
 <section id="home-about" class="gh-section mx-auto max-w-page px-6 sm:px-8">
   <header class="gh-section-head">
     <div>
-      <p class="gh-meta">01 — About</p>
-      <h2 class="gh-section-title">A few things about me</h2>
+      <p class="gh-meta">{t('home.about.eyebrow')}</p>
+      <h2 class="gh-section-title">{t('home.about.heading')}</h2>
     </div>
   </header>
 
@@ -60,14 +71,14 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
     </div>
 
     <div class="hp-timeline" data-expanded="false">
-      <p class="gh-meta hp-timeline-label">Timeline</p>
+      <p class="gh-meta hp-timeline-label">{t('home.about.timeline')}</p>
       {
-        TIMELINE.map((t, i) => (
+        TIMELINE.map((item, i) => (
           <div class:list={["gh-meta-row hp-timeline-row", i >= INITIAL_VISIBLE && "is-overflow"]}>
-            <p class="hp-timeline-years">{t.years}</p>
+            <p class="hp-timeline-years">{item.years}</p>
             <div>
-              <p class="hp-timeline-org">{t.org}</p>
-              <p class="hp-timeline-role">{t.role}</p>
+              <p class="hp-timeline-org">{item.org}</p>
+              <p class="hp-timeline-role">{item.role}</p>
             </div>
           </div>
         ))
@@ -81,9 +92,9 @@ const hasOverflow = TIMELINE.length > INITIAL_VISIBLE;
             aria-expanded="false"
           >
             <span data-toggle-label-show>
-              Show more <span aria-hidden="true">→</span>
+              {t('home.about.showMore')} <span aria-hidden="true">→</span>
             </span>
-            <span data-toggle-label-hide hidden>Show less</span>
+            <span data-toggle-label-hide hidden>{t('home.about.showLess')}</span>
           </button>
         )
       }

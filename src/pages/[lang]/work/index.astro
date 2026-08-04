@@ -1,0 +1,57 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import TagFilter from "@components/TagFilter.astro";
+import CollectionList from "@components/CollectionList.astro";
+import { getCollection } from "astro:content";
+import { collectTags } from "@lib/tagFilter";
+import { LOCALE_PATHS, resolveLocalizedList, switcherHrefsFor } from "@lib/i18n";
+import { compareEntryPriority } from "@lib/entryRank";
+import { useTranslations } from "@lib/ui";
+import type { GetStaticPaths } from "astro";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return LOCALE_PATHS.map((lang) => ({ params: { lang } }));
+};
+
+const { lang } = Astro.params as { lang: string };
+const t = useTranslations(lang);
+
+const all = await getCollection("work", ({ data }) =>
+  import.meta.env.PROD ? !data.draft : true,
+);
+// One entry per distinct slug for THIS locale (real translation or source
+// fallback) — never the raw multi-locale getCollection() output.
+const works = resolveLocalizedList(all, lang)
+  .map((r) => r.entry)
+  .sort(compareEntryPriority);
+
+const tags = collectTags(works);
+const switcherHrefs = switcherHrefsFor('work');
+---
+
+<BaseLayout locale={lang} switcherHrefs={switcherHrefs}>
+  <section class="mx-auto max-w-page px-6 sm:px-8 py-16">
+    <header class="mb-10">
+      <p class="gh-meta">
+        {t('listing.workMeta')} · <span data-tag-filter-count>{works.length}</span>
+      </p>
+      <h1 class="gh-section-title">{t('listing.workHeading')}</h1>
+    </header>
+
+    {
+      works.length === 0 ? (
+        <p>{t('listing.emptyWork')}</p>
+      ) : (
+        <div data-tag-filter-root data-collection="work">
+          <TagFilter tags={tags} variant="listing" />
+          <CollectionList
+            entries={works}
+            collection="work"
+            variant="listing"
+            locale={lang}
+          />
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

@@ -1,0 +1,35 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { buildPersonSchema, absoluteUrl, DEFAULT_OG_IMAGE } from "@lib/seo";
+import { LOCALE_PATHS, localizedPath, uiPageHreflang } from "@lib/i18n";
+import { useTranslations } from "@lib/ui";
+import type { GetStaticPaths } from "astro";
+
+import Hero from "@features/home/Hero.astro";
+import About from "@features/home/About.astro";
+import Work from "@features/home/Work.astro";
+import Writing from "@features/home/Writing.astro";
+import Contact from "@features/home/Contact.astro";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return LOCALE_PATHS.map((lang) => ({ params: { lang } }));
+};
+
+const { lang } = Astro.params as { lang: string };
+const t = useTranslations(lang);
+
+const personJsonLd = buildPersonSchema({
+  url: absoluteUrl(localizedPath(lang), Astro.site),
+  image: absoluteUrl(DEFAULT_OG_IMAGE, Astro.site),
+});
+
+const alternates = uiPageHreflang(Astro.site);
+---
+
+<BaseLayout title="Gorm — SuHong Park" seo={{ jsonLd: personJsonLd }} locale={lang} alternates={alternates}>
+  <Hero locale={lang} t={t} />
+  <About locale={lang} t={t} />
+  <Work locale={lang} t={t} />
+  <Writing locale={lang} t={t} />
+  <Contact locale={lang} t={t} />
+</BaseLayout>
