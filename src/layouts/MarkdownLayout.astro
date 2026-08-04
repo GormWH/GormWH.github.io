@@ -37,7 +37,7 @@ const mergedSeo: SeoProps = {
 };
 const hasLeft = Astro.slots.has("left");
 const hasRight = Astro.slots.has("right");
-const t = useTranslations(locale.split('-')[0] ?? 'en');
+const t = useTranslations(locale);
 ---
 
 <BaseLayout

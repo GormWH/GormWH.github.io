@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { locale = DEFAULT_LOCALE, switcherHrefs } = Astro.props;
-const t = useTranslations(locale.split('-')[0] ?? 'en');
+const t = useTranslations(locale);
 const currentYear = new Date().getFullYear();
 ---
 
@@ -33,7 +33,7 @@ const currentYear = new Date().getFullYear();
           <a
             class="gh-footer-link"
             href={switcherHrefs?.[l.path] ?? localizedPath(l.path)}
-            lang={l.htmlLang}
+            lang={l.code}
             aria-current={l.path === locale ? "true" : undefined}
           >
             {l.label}

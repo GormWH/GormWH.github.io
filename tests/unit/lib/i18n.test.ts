@@ -3,8 +3,6 @@ import {
   LOCALES,
   LOCALE_PATHS,
   DEFAULT_LOCALE,
-  localeByPath,
-  isLocalePath,
   getLocaleInfo,
   getLocaleFromId,
   getSlugFromId,
@@ -14,25 +12,15 @@ import {
   resolveLocalizedList,
   getTranslationLocales,
   hreflangAlternates,
+  uiPageHreflang,
+  switcherHrefsFor,
+  buildLocalizedDetailPaths,
 } from '@lib/i18n';
 
 describe('LOCALES table', () => {
   it('has en-us as DEFAULT_LOCALE', () => {
     expect(DEFAULT_LOCALE).toBe('en-us');
     expect(LOCALE_PATHS).toContain(DEFAULT_LOCALE);
-  });
-
-  it('maps every path to its own info in localeByPath', () => {
-    for (const locale of LOCALES) {
-      expect(localeByPath[locale.path]).toEqual(locale);
-    }
-  });
-
-  it('isLocalePath narrows known paths and rejects unknown ones', () => {
-    expect(isLocalePath('en-us')).toBe(true);
-    expect(isLocalePath('ja-jp')).toBe(true);
-    expect(isLocalePath('xx-xx')).toBe(false);
-    expect(isLocalePath('')).toBe(false);
   });
 
   it('getLocaleInfo is tolerant of unknown paths', () => {
@@ -190,6 +178,69 @@ describe('hreflangAlternates', () => {
     expect(alternates).toEqual([
       { hreflang: 'en', href: '/en-us/work/rok-army-comms/' },
       { hreflang: 'x-default', href: '/en-us/work/rok-army-comms/' },
+    ]);
+  });
+});
+
+describe('uiPageHreflang', () => {
+  it('includes every locale unconditionally plus x-default at DEFAULT_LOCALE', () => {
+    const alternates = uiPageHreflang(undefined, 'contact');
+    expect(alternates).toEqual([
+      { hreflang: 'en', href: '/en-us/contact/' },
+      { hreflang: 'ja', href: '/ja-jp/contact/' },
+      { hreflang: 'ko', href: '/ko-kr/contact/' },
+      { hreflang: 'x-default', href: '/en-us/contact/' },
+    ]);
+  });
+
+  it('produces absolute URLs when a site origin is given', () => {
+    const alternates = uiPageHreflang(new URL('https://ex.com'));
+    expect(alternates[0]?.href).toBe('https://ex.com/en-us/');
+  });
+});
+
+describe('switcherHrefsFor', () => {
+  it('maps every locale path to the same logical page under that locale', () => {
+    expect(switcherHrefsFor('writing', 'foo')).toEqual({
+      'en-us': '/en-us/writing/foo/',
+      'ja-jp': '/ja-jp/writing/foo/',
+      'ko-kr': '/ko-kr/writing/foo/',
+    });
+  });
+
+  it('maps to locale roots when no segments are given', () => {
+    expect(switcherHrefsFor()['ja-jp']).toBe('/ja-jp/');
+  });
+});
+
+describe('buildLocalizedDetailPaths', () => {
+  const byId = (a: { id: string }, b: { id: string }) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+
+  it('emits every locale x distinct-slug combination exactly once', () => {
+    const paths = buildLocalizedDetailPaths(entries, byId);
+    expect(paths).toHaveLength(LOCALE_PATHS.length * distinctSlugs(entries).length);
+    const seen = new Set(paths.map((p) => `${p.params.lang}/${p.params.slug}`));
+    expect(seen.size).toBe(paths.length);
+  });
+
+  it('slug params never contain a locale segment', () => {
+    for (const p of buildLocalizedDetailPaths(entries, byId)) {
+      expect(LOCALE_PATHS.some((l) => p.params.slug.includes(l))).toBe(false);
+    }
+  });
+
+  it('resolves fallbacks and chains next in comparator order per locale', () => {
+    const paths = buildLocalizedDetailPaths(entries, byId);
+    const koPaths = paths.filter((p) => p.params.lang === 'ko-kr');
+    expect(koPaths.every((p) => p.props.resolved.isFallback)).toBe(true);
+
+    const first = koPaths.find((p) => p.params.slug === 'portfolio-v1');
+    expect(first?.props.next?.slug).toBe('rok-army-comms');
+    const last = koPaths.find((p) => p.params.slug === 'rok-army-comms');
+    expect(last?.props.next).toBeNull();
+    expect(first?.props.sidebarEntries.map((e) => getSlugFromId(e.id))).toEqual([
+      'portfolio-v1',
+      'rok-army-comms',
     ]);
   });
 });

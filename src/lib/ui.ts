@@ -1,6 +1,7 @@
 // UI chrome strings, keyed by language code (not locale path — 'en'/'ja'/'ko',
 // matching LocaleInfo.code from src/lib/i18n.ts). Hand-authored, no machine
 // translation. NO EMOJI — allowed glyphs: → · — ※ ✻ (CJK content is fine).
+import { getLocaleInfo } from './i18n';
 export interface UiDict {
   nav: {
     about: string;
@@ -291,9 +292,14 @@ function getPath(dict: UiDict, key: string): string | undefined {
   return typeof cursor === 'string' ? cursor : undefined;
 }
 
-/** Returns a `t(key)` lookup for the given language code, falling back to English for unknown codes or missing keys. */
-export function useTranslations(code: string): (key: UiKey) => string {
-  const dict = isUiLanguageCode(code) ? ui[code] : ui.en;
+/**
+ * Returns a `t(key)` lookup for a language code ('ja') or a locale path
+ * ('ja-jp' — resolved through the locale table, never hand-parsed), falling
+ * back to English for unknown inputs or missing keys.
+ */
+export function useTranslations(localeOrCode: string): (key: UiKey) => string {
+  const code = isUiLanguageCode(localeOrCode) ? localeOrCode : getLocaleInfo(localeOrCode)?.code;
+  const dict = code !== undefined && isUiLanguageCode(code) ? ui[code] : ui.en;
   return function t(key: UiKey): string {
     return getPath(dict, key) ?? getPath(ui.en, key) ?? key;
   };

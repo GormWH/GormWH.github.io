@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { locale = DEFAULT_LOCALE, t: tProp } = Astro.props;
-const t = tProp ?? useTranslations(locale.split('-')[0] ?? 'en');
+const t = tProp ?? useTranslations(locale);
 ---
 
 <section id="home-contact" class="gh-section mx-auto max-w-page px-6 sm:px-8">

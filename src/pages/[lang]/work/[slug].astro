@@ -9,63 +9,21 @@ import type { CollectionEntry } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import { buildArticleSchema, absoluteUrl, DEFAULT_OG_IMAGE } from "@lib/seo";
 import {
-  LOCALE_PATHS,
   localizedPath,
-  distinctSlugs,
-  resolveEntry,
   hreflangAlternates,
+  switcherHrefsFor,
+  buildLocalizedDetailPaths,
 } from "@lib/i18n";
-import type { ResolvedEntry } from "@lib/i18n";
+import type { LocalizedDetailProps } from "@lib/i18n";
+import { compareEntryPriority } from "@lib/entryRank";
 
-interface SlugResolved {
-  slug: string;
-  resolved: ResolvedEntry<CollectionEntry<"work">>;
-}
-
-interface Props {
-  resolved: ResolvedEntry<CollectionEntry<"work">>;
-  slug: string;
-  next: SlugResolved | null;
-  sidebarEntries: CollectionEntry<"work">[];
-  rawEntries: CollectionEntry<"work">[];
-}
+type Props = LocalizedDetailProps<CollectionEntry<"work">>;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // Nested (not a sibling top-level declaration): Astro's build extracts a
-  // minimal chunk to run getStaticPaths ahead of the render path, and a
-  // helper defined outside this closure was observed being tree-shaken away
-  // ("compareWork is not defined" at build time) even though it's called
-  // from inside here — keep helpers self-contained in the closure instead.
-  function compareWork(a: CollectionEntry<"work">, b: CollectionEntry<"work">) {
-    const imp = Number(b.data.important) - Number(a.data.important);
-    if (imp !== 0) return imp;
-    const dateDiff = b.data.date.getTime() - a.data.date.getTime();
-    if (dateDiff !== 0) return dateDiff;
-    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-  }
-
   const rawEntries = await getCollection("work", ({ data }) =>
     import.meta.env.PROD ? !data.draft : true,
   );
-  const slugs = distinctSlugs(rawEntries);
-
-  return LOCALE_PATHS.flatMap((lang) => {
-    const resolvedList: SlugResolved[] = slugs
-      .map((slug) => ({ slug, resolved: resolveEntry(rawEntries, slug, lang) }))
-      .filter((r): r is SlugResolved => r.resolved !== null)
-      .sort((a, b) => compareWork(a.resolved.entry, b.resolved.entry));
-
-    return resolvedList.map(({ slug, resolved }, idx) => ({
-      params: { lang, slug },
-      props: {
-        resolved,
-        slug,
-        next: resolvedList[idx + 1] ?? null,
-        sidebarEntries: resolvedList.map((r) => r.resolved.entry),
-        rawEntries,
-      },
-    }));
-  });
+  return buildLocalizedDetailPaths(rawEntries, compareEntryPriority);
 };
 
 const { lang } = Astro.params as { lang: string };
@@ -89,12 +47,7 @@ const workJsonLd = buildArticleSchema({
   image: absoluteUrl(DEFAULT_OG_IMAGE, Astro.site),
 });
 
-// Every locale x slug combination is generated (fallback-rendered when no
-// translation exists), so the switcher can point straight at the same slug
-// under each locale without ever 404ing.
-const switcherHrefs = Object.fromEntries(
-  LOCALE_PATHS.map((l) => [l, localizedPath(l, 'work', slug)]),
-);
+const switcherHrefs = switcherHrefsFor('work', slug);
 
 // exactOptionalPropertyTypes: omit the `canonical` key entirely for real
 // entries rather than passing an explicit `undefined`.

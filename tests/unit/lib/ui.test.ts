@@ -38,6 +38,13 @@ describe('useTranslations', () => {
     expect(t('nav.work')).toBe(ui.en.nav.work);
   });
 
+  it('accepts a locale path and resolves it through the locale table', () => {
+    expect(useTranslations('ja-jp')('nav.work')).toBe(ui.ja.nav.work);
+    expect(useTranslations('ko-kr')('nav.work')).toBe(ui.ko.nav.work);
+    expect(useTranslations('en-us')('nav.work')).toBe(ui.en.nav.work);
+    expect(useTranslations('xx-xx')('nav.work')).toBe(ui.en.nav.work);
+  });
+
   it('falls back to English for a key missing from the requested language and returns the key itself as a last resort', () => {
     const t = useTranslations('ja');
     // nav.work exists in both; sanity-check normal resolution still works

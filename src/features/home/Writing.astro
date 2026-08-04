@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
 import { DEFAULT_LOCALE, localizedPath, getSlugFromId, resolveLocalizedList } from "@lib/i18n";
+import { compareEntryPriority } from "@lib/entryRank";
 import { useTranslations, type UiKey } from "@lib/ui";
 
 interface Props {
@@ -10,18 +10,7 @@ interface Props {
 }
 
 const { locale = DEFAULT_LOCALE, t: tProp } = Astro.props;
-const t = tProp ?? useTranslations(locale.split('-')[0] ?? 'en');
-
-function compareWriting(
-  a: CollectionEntry<"writing">,
-  b: CollectionEntry<"writing">,
-) {
-  const imp = Number(b.data.important) - Number(a.data.important);
-  if (imp !== 0) return imp;
-  const dateDiff = b.data.date.getTime() - a.data.date.getTime();
-  if (dateDiff !== 0) return dateDiff;
-  return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-}
+const t = tProp ?? useTranslations(locale);
 
 const all = await getCollection("writing", ({ data }) =>
   import.meta.env.PROD ? !data.draft : true,
@@ -30,7 +19,7 @@ const all = await getCollection("writing", ({ data }) =>
 // before ranking, so duplicate slugs from other locales never leak in.
 const writings = resolveLocalizedList(all, locale)
   .map((r) => r.entry)
-  .sort(compareWriting)
+  .sort(compareEntryPriority)
   .slice(0, 4);
 ---
 

@@ -4,7 +4,8 @@ import TagFilter from "@components/TagFilter.astro";
 import CollectionList from "@components/CollectionList.astro";
 import { getCollection } from "astro:content";
 import { collectTags } from "@lib/tagFilter";
-import { LOCALE_PATHS, localizedPath, resolveLocalizedList } from "@lib/i18n";
+import { LOCALE_PATHS, resolveLocalizedList, switcherHrefsFor } from "@lib/i18n";
+import { compareEntryPriority } from "@lib/entryRank";
 import { useTranslations } from "@lib/ui";
 import type { GetStaticPaths } from "astro";
 
@@ -13,7 +14,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const { lang } = Astro.params as { lang: string };
-const t = useTranslations(lang.split('-')[0] ?? 'en');
+const t = useTranslations(lang);
 
 const all = await getCollection("work", ({ data }) =>
   import.meta.env.PROD ? !data.draft : true,
@@ -22,16 +23,10 @@ const all = await getCollection("work", ({ data }) =>
 // fallback) — never the raw multi-locale getCollection() output.
 const works = resolveLocalizedList(all, lang)
   .map((r) => r.entry)
-  .sort((a, b) => {
-    const imp = Number(b.data.important) - Number(a.data.important);
-    if (imp !== 0) return imp;
-    const t2 = b.data.date.getTime() - a.data.date.getTime();
-    if (t2 !== 0) return t2;
-    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-  });
+  .sort(compareEntryPriority);
 
 const tags = collectTags(works);
-const switcherHrefs = Object.fromEntries(LOCALE_PATHS.map((l) => [l, localizedPath(l, 'work')]));
+const switcherHrefs = switcherHrefsFor('work');
 ---
 
 <BaseLayout locale={lang} switcherHrefs={switcherHrefs}>

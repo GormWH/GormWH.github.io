@@ -1,8 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { buildPersonSchema, absoluteUrl, DEFAULT_OG_IMAGE } from "@lib/seo";
-import { LOCALE_PATHS, DEFAULT_LOCALE, localizedPath, getLocaleInfo } from "@lib/i18n";
-import type { HreflangAlternate } from "@lib/i18n";
+import { LOCALE_PATHS, localizedPath, uiPageHreflang } from "@lib/i18n";
 import { useTranslations } from "@lib/ui";
 import type { GetStaticPaths } from "astro";
 
@@ -17,23 +16,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const { lang } = Astro.params as { lang: string };
-const t = useTranslations(lang.split('-')[0] ?? 'en');
+const t = useTranslations(lang);
 
 const personJsonLd = buildPersonSchema({
   url: absoluteUrl(localizedPath(lang), Astro.site),
   image: absoluteUrl(DEFAULT_OG_IMAGE, Astro.site),
 });
 
-// The homepage has no "translation" concept in the resolveEntry sense — every
-// locale always renders its own homepage — so all three locales join the
-// hreflang cluster unconditionally, plus x-default.
-const alternates: HreflangAlternate[] = [
-  ...LOCALE_PATHS.map((l) => ({
-    hreflang: getLocaleInfo(l)!.code,
-    href: absoluteUrl(localizedPath(l), Astro.site),
-  })),
-  { hreflang: 'x-default', href: absoluteUrl(localizedPath(DEFAULT_LOCALE), Astro.site) },
-];
+const alternates = uiPageHreflang(Astro.site);
 ---
 
 <BaseLayout title="Gorm — SuHong Park" seo={{ jsonLd: personJsonLd }} locale={lang} alternates={alternates}>

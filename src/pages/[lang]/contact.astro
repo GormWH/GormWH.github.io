@@ -1,9 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { channels } from "../../data/contact-channels";
-import { LOCALE_PATHS, DEFAULT_LOCALE, localizedPath, getLocaleInfo } from "@lib/i18n";
-import type { HreflangAlternate } from "@lib/i18n";
-import { absoluteUrl } from "@lib/seo";
+import { LOCALE_PATHS, switcherHrefsFor, uiPageHreflang } from "@lib/i18n";
 import { useTranslations } from "@lib/ui";
 import type { GetStaticPaths } from "astro";
 
@@ -12,21 +10,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const { lang } = Astro.params as { lang: string };
-const t = useTranslations(lang.split('-')[0] ?? 'en');
+const t = useTranslations(lang);
 
-const switcherHrefs = Object.fromEntries(
-  LOCALE_PATHS.map((l) => [l, localizedPath(l, 'contact')]),
-);
-
-// Contact is UI chrome, not a content-collection entry — no fallback concept,
-// every locale renders its own page, so all three join hreflang unconditionally.
-const alternates: HreflangAlternate[] = [
-  ...LOCALE_PATHS.map((l) => ({
-    hreflang: getLocaleInfo(l)!.code,
-    href: absoluteUrl(localizedPath(l, 'contact'), Astro.site),
-  })),
-  { hreflang: 'x-default', href: absoluteUrl(localizedPath(DEFAULT_LOCALE, 'contact'), Astro.site) },
-];
+const switcherHrefs = switcherHrefsFor('contact');
+const alternates = uiPageHreflang(Astro.site, 'contact');
 ---
 
 <BaseLayout

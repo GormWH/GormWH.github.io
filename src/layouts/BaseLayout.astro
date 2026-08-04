@@ -13,7 +13,7 @@ import {
   DEFAULT_DESCRIPTION,
   TWITTER_CARD,
 } from "@lib/seo";
-import { DEFAULT_LOCALE, getLocaleInfo, localeByPath } from "@lib/i18n";
+import { DEFAULT_LOCALE, LOCALES, getLocaleInfo } from "@lib/i18n";
 import type { HreflangAlternate } from "@lib/i18n";
 
 interface Props {
@@ -46,11 +46,11 @@ const effectiveCanonical = seo?.canonical ?? canonical ?? absoluteUrl(Astro.url.
 const ogType = seo?.ogType ?? 'website';
 const ogImageAbs = absoluteUrl(seo?.ogImage ?? DEFAULT_OG_IMAGE, Astro.site);
 const { publishedTime, modifiedTime, tags } = seo ?? {};
-const localeInfo = getLocaleInfo(locale) ?? localeByPath[DEFAULT_LOCALE];
+const localeInfo = getLocaleInfo(locale) ?? LOCALES[0];
 ---
 
 <!doctype html>
-<html lang={localeInfo.htmlLang}>
+<html lang={localeInfo.code}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
