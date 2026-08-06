@@ -1,5 +1,5 @@
 ---
-import { DEFAULT_LOCALE, LOCALES, localizedPath } from "@lib/i18n";
+import { DEFAULT_LOCALE, LOCALES, getLocaleInfo, localizedPath } from "@lib/i18n";
 import { useTranslations } from "@lib/ui";
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
 const { locale = DEFAULT_LOCALE, switcherHrefs } = Astro.props;
 const t = useTranslations(locale);
 const home = localizedPath(locale);
+const activeInfo = getLocaleInfo(locale) ?? LOCALES[0];
 
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 const navItems = [
@@ -51,22 +52,50 @@ const isActive = (href: string) => {
         </a>
       ))
     }
-    <span class="gh-lang-switcher" aria-label="Language">
-      {
-        LOCALES.map((l, i) => (
-          <>
-            {i > 0 && <span class="gh-symbol" aria-hidden="true">·</span>}
-            <a
-              href={switcherHrefs?.[l.path] ?? localizedPath(l.path)}
-              class="gh-link"
-              lang={l.code}
-              aria-current={l.path === locale ? "true" : undefined}
-            >
-              {l.label}
-            </a>
-          </>
-        ))
-      }
-    </span>
+    <details class="gh-lang-menu">
+      <summary class="gh-lang-trigger" aria-label={`${activeInfo.label} — change language`}>
+        <svg
+          class="gh-lang-globe"
+          viewBox="0 0 16 16"
+          width="15"
+          height="15"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.2"
+          aria-hidden="true"
+        >
+          <circle cx="8" cy="8" r="6.5" />
+          <ellipse cx="8" cy="8" rx="3" ry="6.5" />
+          <path d="M1.5 8h13" />
+        </svg>
+        <span class="gh-lang-current" lang={activeInfo.code}>{activeInfo.label}</span>
+        <span class="gh-lang-caret" aria-hidden="true"></span>
+      </summary>
+      <ul class="gh-lang-panel">
+        {
+          LOCALES.map((l) => (
+            <li>
+              {l.path === locale ? (
+                <span class="gh-lang-option" aria-current="true" lang={l.code}>
+                  {l.label}
+                </span>
+              ) : (
+                <a
+                  class="gh-lang-option"
+                  href={switcherHrefs?.[l.path] ?? localizedPath(l.path)}
+                  lang={l.code}
+                >
+                  {l.label}
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </details>
   </nav>
 </header>
+
+<script>
+  import "@scripts/lang-menu.ts";
+</script>

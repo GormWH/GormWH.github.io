@@ -113,9 +113,9 @@ test.describe('i18n — language switcher', () => {
       `${SITE_ORIGIN}/en-us/writing/closer-to-the-decisions/`,
     );
 
-    // Scope to the Footer's switcher — it's a real `<nav aria-label="Language">`
-    // landmark; the Header's equivalent is a `<span>` with the same aria-label
-    // and would otherwise collide on an accessible-name lookup (strict mode).
+    // Scope to the Footer's switcher — deliberately the site's ONLY
+    // `<nav aria-label="Language">` landmark. The Header switcher is a
+    // non-landmark `<details>` disclosure, so this query stays unique.
     const switcher = page.getByRole('navigation', { name: 'Language' });
 
     await switcher.getByRole('link', { name: LOCALES['ja-jp'].label }).click();
@@ -132,5 +132,62 @@ test.describe('i18n — unknown locale', () => {
   test('I5: an unrecognized locale path falls through to the top-level 404', async ({ page }) => {
     await page.goto('/xx-xx/');
     await expect(page.locator('h1')).toHaveText("This page isn't here.");
+  });
+});
+
+test.describe('i18n — header language disclosure', () => {
+  test('I6: options are hidden until the trigger is clicked; selecting 日本語 lands on the fallback', async ({
+    page,
+  }) => {
+    await page.goto('/en-us/writing/closer-to-the-decisions/');
+    const menu = page.locator('header details.gh-lang-menu');
+    const trigger = menu.locator('summary.gh-lang-trigger');
+    const jaLink = menu.getByRole('link', { name: LOCALES['ja-jp'].label });
+
+    await expect(trigger).toBeVisible();
+    await expect(jaLink).not.toBeVisible();
+
+    await trigger.click();
+    await expect(menu).toHaveAttribute('open', '');
+    await expect(jaLink).toBeVisible();
+    // The active locale is rendered non-interactive — no self-link.
+    await expect(menu.getByRole('link', { name: LOCALES['en-us'].label })).toHaveCount(0);
+
+    await jaLink.click();
+    await expect(page).toHaveURL(/\/ja-jp\/writing\/closer-to-the-decisions\/?$/);
+    await expect(page.getByRole('note')).toBeVisible();
+  });
+
+  test('I7: keyboard — Enter opens the disclosure, Escape closes it and returns focus to the trigger', async ({
+    page,
+  }) => {
+    await page.goto('/en-us/');
+    const menu = page.locator('header details.gh-lang-menu');
+    const trigger = menu.locator('summary.gh-lang-trigger');
+
+    await trigger.focus();
+    await page.keyboard.press('Enter');
+    await expect(menu).toHaveAttribute('open', '');
+
+    await page.keyboard.press('Escape');
+    await expect(menu).not.toHaveAttribute('open', '');
+    await expect(trigger).toBeFocused();
+  });
+
+  test.describe('I8: zero-JS baseline', () => {
+    // The <details> disclosure is the design's core premise: it must work
+    // with JavaScript disabled (the lang-menu script only adds niceties).
+    test.use({ javaScriptEnabled: false });
+
+    test('the disclosure opens and a locale link navigates without JavaScript', async ({ page }) => {
+      await page.goto('/en-us/writing/closer-to-the-decisions/');
+      const menu = page.locator('header details.gh-lang-menu');
+
+      await menu.locator('summary.gh-lang-trigger').click();
+      await expect(menu).toHaveAttribute('open', '');
+
+      await menu.getByRole('link', { name: LOCALES['ja-jp'].label }).click();
+      await expect(page).toHaveURL(/\/ja-jp\/writing\/closer-to-the-decisions\/?$/);
+    });
   });
 });
