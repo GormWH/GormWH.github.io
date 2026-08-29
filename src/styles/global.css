@@ -254,6 +254,116 @@ a { color: inherit; text-decoration: none; }
   gap: var(--space-8);
 }
 
+/* Header language disclosure (<details>) — the Footer keeps .gh-lang-switcher. */
+.gh-lang-menu {
+  position: relative;
+}
+
+.gh-lang-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  list-style: none;
+  cursor: pointer;
+  color: var(--color-ink-2);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-2);
+  padding: var(--space-6) var(--space-10);
+  transition:
+    color var(--duration-fast) var(--ease-mech),
+    border-color var(--duration-fast) var(--ease-mech);
+}
+
+.gh-lang-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.gh-lang-trigger:hover {
+  color: var(--color-ink-1);
+  border-color: var(--color-ink-3);
+}
+
+.gh-lang-trigger:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.gh-lang-globe {
+  display: block;
+}
+
+.gh-lang-caret {
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--duration-fast) var(--ease-mech);
+}
+
+.gh-lang-menu[open] .gh-lang-caret {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+.gh-lang-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-8));
+  z-index: 1;
+  min-width: 140px;
+  max-width: calc(100vw - var(--space-32));
+  margin: 0;
+  padding: var(--space-6);
+  list-style: none;
+  background: var(--color-bg);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-2);
+}
+
+.gh-lang-option {
+  display: block;
+  padding: var(--space-8) var(--space-10);
+  border-radius: var(--radius-2);
+  color: var(--color-ink-1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+a.gh-lang-option:hover {
+  background: var(--color-bg-2);
+}
+
+.gh-lang-option[aria-current="true"] {
+  color: var(--color-ink-3);
+  cursor: default;
+}
+
+@media (max-width: 480px) {
+  /* The header row can outgrow very narrow viewports (pre-existing: the nav
+     links alone leave ~50px of slack at 360px). Contain that overflow inside
+     the nav as a horizontal scroll area so the PAGE never scrolls sideways. */
+  .gh-nav {
+    overflow-x: auto;
+  }
+
+  /* Icon-only trigger on narrow screens; the summary aria-label still names
+     the current language for AT users. */
+  .gh-lang-current {
+    display: none;
+  }
+
+  /* Pin the panel under the sticky header instead of the trigger: the header
+     nav can overflow the viewport on narrow screens (pre-existing layout
+     issue), and an absolutely-positioned panel would inherit that overflow.
+     Fixed positioning keeps the panel on-viewport regardless. */
+  .gh-lang-panel {
+    position: fixed;
+    top: calc(var(--height-header) + var(--space-4));
+    right: var(--space-12);
+    max-width: calc(100vw - var(--space-24));
+  }
+}
+
 @media (max-width: 760px) {
   .gh-header { padding-inline: var(--space-16); }
   .gh-nav { gap: var(--space-16); }

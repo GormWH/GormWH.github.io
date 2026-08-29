@@ -1,10 +1,10 @@
 # GormWH.github.io
 
-Source for my personal site at [https://GormWH.github.io](https://GormWH.github.io) — built with Astro 6, Tailwind v4 (CSS-first), and React 19 islands.
+Source for my personal site at [https://GormWH.github.io](https://GormWH.github.io) — built with Astro 7, Tailwind v4 (CSS-first), and React 19 islands.
 
 ## Stack
 
-- **Astro 6**, static output. Single page today (`src/pages/index.astro`); routes for `/about`, `/work`, `/blog`, and `/contact` are stubbed in the header but not yet built.
+- **Astro 7**, static output. Single page today (`src/pages/index.astro`); routes for `/about`, `/work`, `/blog`, and `/contact` are stubbed in the header but not yet built.
 - **React 19** via `@astrojs/react`. Islands are available; nothing currently uses them — every page-level file is `.astro`.
 - **Tailwind v4** through the Vite plugin (`@tailwindcss/vite`). Configuration is **CSS-first**: every design token lives in `@theme { ... }` inside `src/styles/global.css`. There is no `tailwind.config.*`.
 - **TypeScript** via `astro/tsconfigs/strictest`.

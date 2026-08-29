@@ -8,7 +8,7 @@ Root `README.md` is visitor-facing; `AGENTS.md` is the contributor index. Subjec
 
 ## Project at a glance
 
-Astro 6 static site for a personal portfolio, deployed to GitHub Pages at `https://GormWH.github.io` (user/org root, no project subpath).
+Astro 7 static site for a personal portfolio, deployed to GitHub Pages at `https://GormWH.github.io` (user/org root, no project subpath).
 
 - Package manager: **pnpm** (Node `>=22.12.0`).
 - Deploy gate: `pnpm build`. Run `pnpm check` before pushing.

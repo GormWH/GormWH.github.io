@@ -2,7 +2,7 @@
 
 ## Stack
 
-- **Astro 6** with the **React** integration (`@astrojs/react`) — React is available for islands but currently every page-level file is `.astro`.
+- **Astro 7** with the **React** integration (`@astrojs/react`) — React is available for islands but currently every page-level file is `.astro`.
 - **Tailwind v4** via the Vite plugin (`@tailwindcss/vite`), configured in `astro.config.mjs`. There is **no `tailwind.config.*`** — all design tokens live in `@theme { ... }` inside `src/styles/global.css` (Tailwind v4 CSS-first config). See [`styling.md`](styling.md).
 - **TypeScript** via `astro/tsconfigs/strictest` (see `tsconfig.json`).
 
