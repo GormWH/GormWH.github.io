@@ -44,7 +44,7 @@ tests/
 
 ## Version note
 
-`vitest` is pinned to `^3.2.0` for Vite 7 parity with Astro 6's bundled Vite. Don't bump past what Astro's Vite version supports without checking compatibility first.
+`vitest` is pinned to `^4` for Vite 8 parity with Astro 7's bundled Vite. Don't bump past what Astro's Vite version supports without checking compatibility first.
 
 ## E2E
 
